@@ -115,6 +115,15 @@ Quick reference for all available Claude Code commands in this template.
 
 ## 🛠️ Utility Commands
 
+### `/update-template`
+**Purpose:** Update template to latest version with AI-powered migration  
+**Example:** `/update-template`  
+**What it does:**
+- Downloads latest template from GitHub
+- Preserves project customizations automatically
+- Uses AI to extract and migrate settings
+- Creates backups for safe recovery
+
 ### `/help [command]`
 **Purpose:** Get help and examples  
 **Example:** `/help dev`  
@@ -256,12 +265,13 @@ claude
 1. **Always start with `/dev`** for new features - TDD prevents bugs
 2. **Run `/check` before `/ship`** - Ensure quality standards
 3. **Use `/plan` for complex features** - Break down before building
-4. **Use AI extraction for template updates** - More reliable than manual migration
-5. **Customize PROJECT-SPECIFIC-CLAUDE.md** - Add your project's specific needs
-6. **Run `/claude-md backup`** - Before major instruction changes
-7. **Update `/claude-md update-mastery`** - Weekly learning progress tracking
-8. **Preview AI extractions** - Always review before confirming migrations
-9. **Use `/agents` for complex tasks** - Delegate to specialized sub-agents
+4. **Use `/update-template` weekly** - Stay current with latest improvements
+5. **Use AI extraction for template updates** - More reliable than manual migration
+6. **Customize PROJECT-SPECIFIC-CLAUDE.md** - Add your project's specific needs
+7. **Run `/claude-md backup`** - Before major instruction changes
+8. **Update `/claude-md update-mastery`** - Weekly learning progress tracking
+9. **Preview AI extractions** - Always review before confirming migrations
+10. **Use `/agents` for complex tasks** - Delegate to specialized sub-agents
 
 ## 🚫 Command Guidelines
 
