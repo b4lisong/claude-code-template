@@ -62,13 +62,24 @@ Quick reference for all available Claude Code commands in this template.
 - Estimates timelines
 - Identifies dependencies
 
-### `/claude-md <instruction>`
-**Purpose:** Update CLAUDE.md instructions  
-**Example:** `/claude-md "add database migration rules"`  
+### `/claude-md <action>`
+**Purpose:** Manage template and project-specific instruction files  
+**Available actions:**
+- `backup` - Create timestamped backups of instruction files
+- `update-mastery` - Update skill progression in PROJECT-SPECIFIC-CLAUDE.md
+- `create-project` - Create PROJECT-SPECIFIC-CLAUDE.md if missing
+- `merge-customizations` - Help migrate old CLAUDE.md customizations
+
+**Examples:**
+- `/claude-md backup` - Backup both instruction files
+- `/claude-md create-project` - Set up project customizations
+- `/claude-md update-mastery` - Track learning progress
+
 **What it does:**
-- Updates project-specific instructions
-- Maintains development standards
-- Preserves team knowledge
+- Manages two-file instruction system (CLAUDE.md + PROJECT-SPECIFIC-CLAUDE.md)
+- Preserves project customizations during template updates
+- Tracks learning objectives and skill progression
+- Provides safe backup and migration capabilities
 
 ## 🛠️ Utility Commands
 
@@ -97,6 +108,31 @@ Quick reference for all available Claude Code commands in this template.
 - Delegate complex tasks to focused agents
 - Coordinate multi-agent workflows
 - Access template-specific agents (TDD-Coach, Quality-Enforcer, Strategic-Planner, Refactoring-Specialist)
+
+## 📁 Two-File Instruction System
+
+The template uses a dual-file system for safe template updates:
+
+### CLAUDE.md (Template Instructions)
+- Core methodology and workflows
+- Universal quality standards  
+- Command definitions and patterns
+- **Safe to update** when template upgrades
+
+### PROJECT-SPECIFIC-CLAUDE.md (Your Customizations)  
+- Language-specific quality rules
+- Project structure definitions
+- Team standards and practices
+- Learning objectives and skill progression
+- **Preserved across template updates**
+
+### File Management Workflow
+```
+/claude-md create-project      # Set up project customizations
+/claude-md backup             # Backup before major changes
+/claude-md update-mastery     # Track learning progress weekly
+/claude-md merge-customizations # Migrate old customizations
+```
 
 ## 🎯 Quick Workflows
 
@@ -136,8 +172,10 @@ Quick reference for all available Claude Code commands in this template.
 1. **Always start with `/dev`** for new features - TDD prevents bugs
 2. **Run `/check` before `/ship`** - Ensure quality standards
 3. **Use `/plan` for complex features** - Break down before building
-4. **Update `/claude-md` regularly** - Capture team knowledge
-5. **Use `/agents` for complex tasks** - Delegate to specialized sub-agents
+4. **Customize PROJECT-SPECIFIC-CLAUDE.md** - Add your project's specific needs
+5. **Run `/claude-md backup`** - Before major instruction changes
+6. **Update `/claude-md update-mastery`** - Weekly learning progress tracking
+7. **Use `/agents` for complex tasks** - Delegate to specialized sub-agents
 
 ## 🚫 Command Guidelines
 

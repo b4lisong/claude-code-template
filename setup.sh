@@ -352,16 +352,58 @@ print_status "Configuring project layout"
 
 # Step 5: Download main configuration
 print_step "Installing main configuration files"
+
+# Handle CLAUDE.md - template instructions (can be safely updated)
 if [ -f "CLAUDE.md" ]; then
-    print_status "CLAUDE.md already exists - preserving existing file"
-    print_info "Your existing CLAUDE.md will not be modified"
+    # Check if CLAUDE.md contains old project customizations
+    if grep -q "tech stack\|Target concept:\|Current Focus:" CLAUDE.md 2>/dev/null && [ ! -f "PROJECT-SPECIFIC-CLAUDE.md" ]; then
+        print_warning "CLAUDE.md contains project customizations that should be moved to PROJECT-SPECIFIC-CLAUDE.md"
+        print_info "Creating PROJECT-SPECIFIC-CLAUDE.md with extraction guidance"
+        
+        # Create PROJECT-SPECIFIC-CLAUDE.md template with guidance
+        if download_with_retry "https://raw.githubusercontent.com/b4lisong/claude-code-template/main/PROJECT-SPECIFIC-CLAUDE.md" "PROJECT-SPECIFIC-CLAUDE.md"; then
+            print_status "Created PROJECT-SPECIFIC-CLAUDE.md template"
+        fi
+        
+        # Backup existing CLAUDE.md and update to template
+        cp CLAUDE.md "CLAUDE.md.backup-$(date +%Y%m%d-%H%M%S)"
+        print_status "Backed up existing CLAUDE.md"
+        
+        if download_with_retry "https://raw.githubusercontent.com/b4lisong/claude-code-template/main/CLAUDE.md" "CLAUDE.md"; then
+            print_status "Updated CLAUDE.md to latest template version"
+            print_info "Your customizations backup is available for manual migration to PROJECT-SPECIFIC-CLAUDE.md"
+        fi
+    else
+        # Safe to update CLAUDE.md since project customizations are separate
+        print_info "Updating CLAUDE.md to latest template version..."
+        cp CLAUDE.md "CLAUDE.md.backup-$(date +%Y%m%d-%H%M%S)"
+        
+        if download_with_retry "https://raw.githubusercontent.com/b4lisong/claude-code-template/main/CLAUDE.md" "CLAUDE.md"; then
+            print_status "Updated CLAUDE.md with latest template"
+        fi
+    fi
 else
+    # Fresh installation
     if ! download_with_retry "https://raw.githubusercontent.com/b4lisong/claude-code-template/main/CLAUDE.md" "CLAUDE.md"; then
         exit 1
     fi
     print_status "Downloaded CLAUDE.md"
 fi
-print_status "Installing configuration files complete"
+
+# Handle PROJECT-SPECIFIC-CLAUDE.md - project customizations (preserved)
+if [ ! -f "PROJECT-SPECIFIC-CLAUDE.md" ]; then
+    print_info "Creating PROJECT-SPECIFIC-CLAUDE.md for project customizations..."
+    if download_with_retry "https://raw.githubusercontent.com/b4lisong/claude-code-template/main/PROJECT-SPECIFIC-CLAUDE.md" "PROJECT-SPECIFIC-CLAUDE.md"; then
+        print_status "Created PROJECT-SPECIFIC-CLAUDE.md template"
+        print_info "Customize PROJECT-SPECIFIC-CLAUDE.md for your project's specific needs"
+    else
+        print_warning "Failed to download PROJECT-SPECIFIC-CLAUDE.md template, continuing..."
+    fi
+else
+    print_status "PROJECT-SPECIFIC-CLAUDE.md already exists - preserving project customizations"
+fi
+
+print_status "Configuration files installation complete"
 
 # Step 6: Install command files and documentation
 print_step "Installing command files and documentation"
@@ -695,7 +737,13 @@ print_status "Claude Code setup complete! (${setup_time}s)"
 # Setup summary
 echo ""
 echo -e "${BLUE}Installation Summary:${NC}"
-echo "  ✓ Installed 1 configuration file (CLAUDE.md)"
+if [ -f "PROJECT-SPECIFIC-CLAUDE.md" ]; then
+    echo "  ✓ Installed 2 configuration files (CLAUDE.md + PROJECT-SPECIFIC-CLAUDE.md)"
+    echo "  ✓ CLAUDE.md: Template instructions (safe to update)"
+    echo "  ✓ PROJECT-SPECIFIC-CLAUDE.md: Your project customizations (preserved)"
+else
+    echo "  ✓ Installed 1 configuration file (CLAUDE.md)"
+fi
 echo "  ✓ Installed $total_files commands and documentation files"
 echo "  ✓ Created .claude/settings.json (hook configuration)"
 echo "  ✓ Configured 3 quality hooks (smart-lint.sh + web search validation)"
@@ -728,6 +776,15 @@ echo -e "  1. Start Claude Code with: ${GREEN}claude${NC}"
 echo -e "  2. Try your first TDD feature: ${GREEN}/dev \"user authentication\"${NC}"
 echo -e "  3. Get help anytime with: ${GREEN}/help${NC}"
 echo ""
+
+if [ -f "PROJECT-SPECIFIC-CLAUDE.md" ]; then
+    echo -e "${YELLOW}📋 Project Customization:${NC}"
+    echo "  • Customize PROJECT-SPECIFIC-CLAUDE.md for your project's specific needs"
+    echo "  • Add language-specific rules, project structure, and team standards"
+    echo "  • This file is preserved when you update the template"
+    echo "  • Use /claude-md commands to manage your customizations"
+    echo ""
+fi
 
 if [ -d ".git" ]; then
     echo -e "${YELLOW}⚡ Professional Standards Enforced:${NC}"

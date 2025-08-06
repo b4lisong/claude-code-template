@@ -4,6 +4,14 @@ We're building production-quality code together. Your role is to create maintain
 
 When you seem stuck or overly complex, I'll redirect you - my guidance helps you stay on track.
 
+## PROJECT-SPECIFIC INSTRUCTIONS
+
+**IMPORTANT:** This file contains template instructions that are updated when the template is upgraded. Project-specific customizations should go in `PROJECT-SPECIFIC-CLAUDE.md`.
+
+**If PROJECT-SPECIFIC-CLAUDE.md exists, read it in addition to these instructions.** Project-specific rules override template defaults where applicable.
+
+Claude Code will automatically read both files to provide complete instructions tailored to your specific project needs.
+
 ## AUTOMATED CHECKS ARE MANDATORY
 
 **ALL hook issues are BLOCKING - EVERYTHING must be GREEN!**  
@@ -201,10 +209,13 @@ Your code must be 100% clean. No exceptions.
 
 ### Language-Specific Additions:
 
-**Rust:** No unwrap(), expect(), panic!() - use Result<T, E>
-**JavaScript/TypeScript:** No any types, use strict mode
-**Python:** No bare except clauses, use type hints
-**Go:** No empty error checks, handle all errors
+**Your project's language-specific rules are defined in PROJECT-SPECIFIC-CLAUDE.md.**
+
+If PROJECT-SPECIFIC-CLAUDE.md doesn't exist, use these template defaults:
+- **Rust:** No unwrap(), expect(), panic!() - use Result<T, E>
+- **JavaScript/TypeScript:** No any types, use strict mode
+- **Python:** No bare except clauses, use type hints
+- **Go:** No empty error checks, handle all errors
 
 **AUTOMATED ENFORCEMENT**: Quality hooks will BLOCK commits that violate these rules.  
 When you see "FORBIDDEN PATTERN", you MUST fix it immediately!
@@ -280,7 +291,11 @@ def parse_config(path: Path) -> Config:
 - **Critical paths** → Add performance/integration tests
 - **Skip testing** trivial getters/setters and framework boilerplate
 
-### Project Structure Examples
+### Project Structure
+
+**Your project's directory structure is defined in PROJECT-SPECIFIC-CLAUDE.md.**
+
+If PROJECT-SPECIFIC-CLAUDE.md doesn't exist, here are common template examples:
 
 **Node.js/TypeScript:**
 ```
@@ -351,6 +366,10 @@ My insights on better approaches are valued - please ask for them!
 Would you like me to [specific improvement]?"
 
 ## Technical Mastery Progression
+
+**Your learning objectives and skill progression are tracked in PROJECT-SPECIFIC-CLAUDE.md.**
+
+If PROJECT-SPECIFIC-CLAUDE.md doesn't exist, use this template structure:
 
 ### Current Focus: [Update weekly]
 - Target concept: Core patterns for your tech stack

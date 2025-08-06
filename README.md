@@ -41,7 +41,7 @@ claude                                # Start Claude Code
 - **`/plan`** - Strategic planning
 - **`/help`** - Interactive guidance
 - **`/prompt`** - Context handoff
-- **`/claude-md`** - Instruction maintenance
+- **`/claude-md`** - Manage template and project-specific instructions
 
 ### 🛡️ **Quality Automation**
 - **Git hooks** prevent Claude attribution and emojis in commits
@@ -85,7 +85,24 @@ claude                                # Start Claude Code
 
 ## Configuration
 
-The setup script creates:
+### Two-File Instruction System
+
+The setup creates a dual-file instruction system for safe template updates:
+
+- **`CLAUDE.md`** - Template instructions (updated with template versions)
+  - Core methodology and workflows
+  - Universal quality standards
+  - Command definitions and patterns
+  - Safe to update when template upgrades
+
+- **`PROJECT-SPECIFIC-CLAUDE.md`** - Your project customizations (preserved across updates)
+  - Language-specific quality rules
+  - Project structure definitions
+  - Team standards and practices
+  - Learning objectives and skill progression
+
+### Additional Configuration
+
 - `.claude/hooks/smart-lint.sh` - Quality enforcement hooks
 - `.claude/settings.json` - Claude Code settings
 - Language-specific tooling configurations
@@ -122,8 +139,16 @@ Agentic workflow:
 
 ### Existing Project
 ```bash
-# Preserves your existing CLAUDE.md
+# Preserves your existing project customizations
 curl -H 'Cache-Control: no-cache' -sL https://raw.githubusercontent.com/b4lisong/claude-code-template/main/setup.sh | bash
+```
+
+### Project Customization
+After setup, customize `PROJECT-SPECIFIC-CLAUDE.md` for your project:
+```bash
+claude                           # Start Claude Code
+/claude-md create-project        # Set up project customizations
+/claude-md update-mastery        # Track your learning goals
 ```
 
 ## Key Features
