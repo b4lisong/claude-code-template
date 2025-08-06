@@ -127,8 +127,9 @@ validate_environment() {
     # Check required commands
     local missing_deps=()
     
-    if ! command -v curl >/dev/null 2>&1; then
-        missing_deps+=("curl")
+    # Check for either curl or wget (not both required)
+    if ! command -v curl >/dev/null 2>&1 && ! command -v wget >/dev/null 2>&1; then
+        missing_deps+=("curl or wget")
     fi
     
     if ! command -v git >/dev/null 2>&1; then
@@ -147,10 +148,11 @@ validate_environment() {
                     echo "  • Ubuntu/Debian: sudo apt-get install git"
                     echo "  • CentOS/RHEL: sudo yum install git"
                     ;;
-                "curl")
-                    echo "  • macOS: brew install curl"
-                    echo "  • Ubuntu/Debian: sudo apt-get install curl"
-                    echo "  • CentOS/RHEL: sudo yum install curl"
+                "curl or wget")
+                    echo "  Install either curl or wget:"
+                    echo "  • macOS: brew install curl  (or: brew install wget)"
+                    echo "  • Ubuntu/Debian: sudo apt-get install curl  (or: sudo apt-get install wget)"
+                    echo "  • CentOS/RHEL: sudo yum install curl  (or: sudo yum install wget)"
                     ;;
             esac
         done
@@ -162,7 +164,34 @@ validate_environment() {
     print_status "Environment validation complete"
 }
 
-# Enhanced network download with comprehensive error handling
+# HTTP download function with curl/wget fallback
+http_download() {
+    local url=$1
+    local output=$2
+    local timeout=${3:-30}
+    
+    # Try curl first
+    if command -v curl >/dev/null 2>&1; then
+        curl -sL --max-time "$timeout" --connect-timeout 10 \
+             --fail --location --show-error \
+             "$url" -o "$output" 2>/dev/null
+        return $?
+    fi
+    
+    # Fall back to wget
+    if command -v wget >/dev/null 2>&1; then
+        wget -q --timeout="$timeout" --connect-timeout=10 \
+             --tries=1 --no-check-certificate \
+             "$url" -O "$output" 2>/dev/null
+        return $?
+    fi
+    
+    # Neither tool available
+    print_error "Neither curl nor wget is available"
+    return 1
+}
+
+# Enhanced network download with comprehensive error handling and curl/wget fallback
 download_with_retry() {
     local url=$1
     local output=$2
@@ -182,29 +211,25 @@ download_with_retry() {
     fi
     
     while [ $attempt -le $max_attempts ]; do
-        # Enhanced curl with better error handling
-        local curl_output
-        curl_output=$(mktemp)
+        # Try download with fallback
+        local download_output
+        download_output=$(mktemp)
         
-        if curl -sL --max-time 30 --connect-timeout 10 \
-                --fail --location --show-error \
-                --write-out "HTTPSTATUS:%{http_code}\nCONTENT_TYPE:%{content_type}" \
-                "$url" > "$output" 2>"$curl_output"; then
-            
+        if http_download "$url" "$output" 30 2>"$download_output"; then
             # Validate download
             if validate_download "$output" "$url"; then
-                rm -f "$curl_output"
+                rm -f "$download_output"
                 return 0
             else
                 print_warning "Download validation failed, retrying..."
             fi
         else
             local error_msg
-            error_msg=$(cat "$curl_output" 2>/dev/null || echo "Unknown error")
+            error_msg=$(cat "$download_output" 2>/dev/null || echo "Unknown error")
             print_warning "Download failed (attempt $attempt/$max_attempts): $error_msg"
         fi
         
-        rm -f "$curl_output"
+        rm -f "$download_output"
         
         if [ $attempt -lt $max_attempts ]; then
             print_info "Retrying in 2 seconds..."
