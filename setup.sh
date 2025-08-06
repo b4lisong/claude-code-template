@@ -172,10 +172,11 @@ http_download() {
     
     # Try curl first
     if command -v curl >/dev/null 2>&1; then
-        curl -sL --max-time "$timeout" --connect-timeout 10 \
-             --fail --location --show-error \
-             "$url" -o "$output" 2>/dev/null
-        return $?
+        if curl -sL --max-time "$timeout" --connect-timeout 10 \
+                --fail --location --show-error \
+                "$url" -o "$output" 2>/dev/null; then
+            return 0
+        fi
     fi
     
     # Fall back to wget
