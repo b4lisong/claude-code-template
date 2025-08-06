@@ -221,7 +221,7 @@ download_with_retry() {
     echo "  • Check firewall/corporate proxy restrictions"
     echo "  • Verify SSL/TLS certificate configuration"
     echo "  • Try again later if the server is temporarily unavailable"
-    echo "  • Download manually from: https://github.com/orielsanchez/claude-code-template"
+    echo "  • Download manually from: https://github.com/b4lisong/claude-code-template"
     return 1
 }
 
@@ -356,7 +356,7 @@ if [ -f "CLAUDE.md" ]; then
     print_status "CLAUDE.md already exists - preserving existing file"
     print_info "Your existing CLAUDE.md will not be modified"
 else
-    if ! download_with_retry "https://raw.githubusercontent.com/orielsanchez/claude-code-template/main/CLAUDE.md" "CLAUDE.md"; then
+    if ! download_with_retry "https://raw.githubusercontent.com/b4lisong/claude-code-template/main/CLAUDE.md" "CLAUDE.md"; then
         exit 1
     fi
     print_status "Downloaded CLAUDE.md"
@@ -376,7 +376,7 @@ install_commands() {
         current_file=$((current_file + 1))
         echo -n "  Installing ${cmd}.md... ($current_file/$total_files) "
         
-        if download_with_retry "https://raw.githubusercontent.com/orielsanchez/claude-code-template/main/.claude/commands/${cmd}.md" ".claude/commands/${cmd}.md"; then
+        if download_with_retry "https://raw.githubusercontent.com/b4lisong/claude-code-template/main/.claude/commands/${cmd}.md" ".claude/commands/${cmd}.md"; then
             echo "[OK] (download)"
         else
             echo "[ERROR] (download failed)"
@@ -389,7 +389,7 @@ install_commands() {
         current_file=$((current_file + 1))
         echo -n "  Installing ${doc}.md... ($current_file/$total_files) "
         
-        if download_with_retry "https://raw.githubusercontent.com/orielsanchez/claude-code-template/main/.claude/commands/${doc}.md" ".claude/commands/${doc}.md"; then
+        if download_with_retry "https://raw.githubusercontent.com/b4lisong/claude-code-template/main/.claude/commands/${doc}.md" ".claude/commands/${doc}.md"; then
             echo "[OK] (download)"
         else
             echo "[ERROR] (download failed)"
@@ -443,7 +443,7 @@ EOF
 
 # Download smart-lint.sh hook from repo
 echo -n "  Installing smart-lint.sh hook... "
-if download_with_retry "https://raw.githubusercontent.com/orielsanchez/claude-code-template/main/.claude/hooks/smart-lint.sh" ".claude/hooks/smart-lint.sh"; then
+if download_with_retry "https://raw.githubusercontent.com/b4lisong/claude-code-template/main/.claude/hooks/smart-lint.sh" ".claude/hooks/smart-lint.sh"; then
     echo "[OK]"
 else
     # Fallback: create a basic version if download fails
@@ -627,14 +627,14 @@ chmod +x .claude/hooks/validate-search-results.py
 
 # Install hook documentation and examples
 echo -n "  Installing hooks documentation... "
-if download_with_retry "https://raw.githubusercontent.com/orielsanchez/claude-code-template/main/.claude/hooks/README.md" ".claude/hooks/README.md"; then
+if download_with_retry "https://raw.githubusercontent.com/b4lisong/claude-code-template/main/.claude/hooks/README.md" ".claude/hooks/README.md"; then
     echo "[OK]"
 else
     echo "[WARN] (documentation download failed, continuing...)"
 fi
 
 echo -n "  Installing example hook config... "
-if download_with_retry "https://raw.githubusercontent.com/orielsanchez/claude-code-template/main/.claude/hooks/example-claude-hooks-config.sh" ".claude/hooks/example-claude-hooks-config.sh"; then
+if download_with_retry "https://raw.githubusercontent.com/b4lisong/claude-code-template/main/.claude/hooks/example-claude-hooks-config.sh" ".claude/hooks/example-claude-hooks-config.sh"; then
     echo "[OK]"
     chmod +x .claude/hooks/example-claude-hooks-config.sh
 else
@@ -642,7 +642,7 @@ else
 fi
 
 echo -n "  Installing example ignore patterns... "
-if download_with_retry "https://raw.githubusercontent.com/orielsanchez/claude-code-template/main/.claude/hooks/example-claude-hooks-ignore" ".claude/hooks/example-claude-hooks-ignore"; then
+if download_with_retry "https://raw.githubusercontent.com/b4lisong/claude-code-template/main/.claude/hooks/example-claude-hooks-ignore" ".claude/hooks/example-claude-hooks-ignore"; then
     echo "[OK]"
 else
     echo "[WARN] (example ignore patterns download failed, continuing...)"
