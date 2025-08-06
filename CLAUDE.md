@@ -35,6 +35,21 @@ _Leverage Claude Code's capabilities strategically_ for better results:
 
 Use the Task tool and systematic workflows whenever a problem has multiple independent parts.
 
+### LARGE CODEBASE ANALYSIS WITH GEMINI CLI
+
+For comprehensive analysis beyond Claude Code's context limits, use Gemini CLI with its much larger context window. **See CLAUDE-GEMINI.md for detailed syntax and examples.**
+
+**Use `gemini -p` when:**
+- Analyzing entire codebases or large directories
+- Comparing multiple large files
+- Need to understand project-wide patterns or architecture  
+- Current context window is insufficient for the task
+- Working with files totaling more than 100KB
+- Verifying if specific features, patterns, or security measures are implemented
+- Checking for the presence of certain coding patterns across the entire codebase
+
+**Important:** Always request user confirmation before using Gemini CLI, following the approval workflow detailed in CLAUDE-GEMINI.md.
+
 ### Enhanced Reality Checkpoints
 
 **Stop and validate** at these moments:
