@@ -169,26 +169,55 @@ http_download() {
     local url=$1
     local output=$2
     local timeout=${3:-30}
+    local error_file
+    error_file=$(mktemp)
     
     # Try curl first
     if command -v curl >/dev/null 2>&1; then
         if curl -sL --max-time "$timeout" --connect-timeout 10 \
                 --fail --location --show-error \
-                "$url" -o "$output" 2>/dev/null; then
+                "$url" -o "$output" 2>"$error_file"; then
+            rm -f "$error_file"
             return 0
         fi
+        local curl_error
+        curl_error=$(cat "$error_file" 2>/dev/null || echo "Unknown curl error")
     fi
     
     # Fall back to wget
     if command -v wget >/dev/null 2>&1; then
-        wget -q --timeout="$timeout" --connect-timeout=10 \
-             --tries=1 --no-check-certificate \
-             "$url" -O "$output" 2>/dev/null
-        return $?
+        # Try with --no-check-certificate first
+        if wget -q --timeout="$timeout" --connect-timeout=10 \
+                --tries=1 --no-check-certificate \
+                "$url" -O "$output" 2>"$error_file"; then
+            rm -f "$error_file"
+            return 0
+        fi
+        
+        # If that fails, try without --no-check-certificate
+        if wget -q --timeout="$timeout" --connect-timeout=10 \
+                --tries=1 "$url" -O "$output" 2>"$error_file"; then
+            rm -f "$error_file"
+            return 0
+        fi
+        
+        local wget_error
+        wget_error=$(cat "$error_file" 2>/dev/null || echo "Unknown wget error")
+        
+        # Log both errors for debugging
+        if [ -n "${curl_error:-}" ]; then
+            echo "curl failed: $curl_error" >&2
+        fi
+        echo "wget failed: $wget_error" >&2
     fi
     
-    # Neither tool available
-    print_error "Neither curl nor wget is available"
+    rm -f "$error_file"
+    
+    # Neither tool available or both failed
+    if ! command -v curl >/dev/null 2>&1 && ! command -v wget >/dev/null 2>&1; then
+        print_error "Neither curl nor wget is available"
+    fi
+    
     return 1
 }
 
