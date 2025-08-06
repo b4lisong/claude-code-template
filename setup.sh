@@ -358,20 +358,152 @@ if [ -f "CLAUDE.md" ]; then
     # Check if CLAUDE.md contains old project customizations
     if grep -q "tech stack\|Target concept:\|Current Focus:" CLAUDE.md 2>/dev/null && [ ! -f "PROJECT-SPECIFIC-CLAUDE.md" ]; then
         print_warning "CLAUDE.md contains project customizations that should be moved to PROJECT-SPECIFIC-CLAUDE.md"
-        print_info "Creating PROJECT-SPECIFIC-CLAUDE.md with extraction guidance"
         
-        # Create PROJECT-SPECIFIC-CLAUDE.md template with guidance
-        if download_with_retry "https://raw.githubusercontent.com/b4lisong/claude-code-template/main/PROJECT-SPECIFIC-CLAUDE.md" "PROJECT-SPECIFIC-CLAUDE.md"; then
-            print_status "Created PROJECT-SPECIFIC-CLAUDE.md template"
+        # Backup existing CLAUDE.md first
+        BACKUP_FILE="CLAUDE.md.backup-$(date +%Y%m%d-%H%M%S)"
+        cp CLAUDE.md "$BACKUP_FILE"
+        print_status "Backed up existing CLAUDE.md to $BACKUP_FILE"
+        
+        # Offer AI-powered extraction
+        print_info "🤖 AI-Powered Migration Available!"
+        echo ""
+        echo "Options for migrating your customizations:"
+        echo "  1. AI Extraction (Recommended) - Let Claude Code intelligently extract your customizations"
+        echo "  2. Manual Migration - Extract customizations manually using backup file"
+        echo ""
+        
+        # Check if running in interactive mode
+        if [ -t 0 ]; then
+            # Interactive mode - offer AI extraction
+            echo "Choose migration method:"
+            echo "  [1] AI Extraction - Automatic, intelligent migration (requires Claude Code)"
+            echo "  [2] Manual Migration - Create template and migrate manually"
+            echo "  [3] Skip Migration - Update template only, migrate later"
+            echo ""
+            read -p "Select option (1-3) [1]: " migration_choice
+            migration_choice=${migration_choice:-1}
+        else
+            # Non-interactive mode - default to manual migration for safety
+            print_info "Running in non-interactive mode - using manual migration approach"
+            migration_choice=2
         fi
         
-        # Backup existing CLAUDE.md and update to template
-        cp CLAUDE.md "CLAUDE.md.backup-$(date +%Y%m%d-%H%M%S)"
-        print_status "Backed up existing CLAUDE.md"
+        case $migration_choice in
+            1)
+                # AI-powered extraction
+                print_info "🚀 Starting AI-powered customization extraction..."
+                
+                # Download template for comparison
+                if download_with_retry "https://raw.githubusercontent.com/b4lisong/claude-code-template/main/PROJECT-SPECIFIC-CLAUDE.md" "PROJECT-SPECIFIC-CLAUDE.md.template"; then
+                    print_status "Downloaded PROJECT-SPECIFIC-CLAUDE.md template"
+                    
+                    # Check if claude command is available
+                    if command -v claude >/dev/null 2>&1; then
+                        print_info "Using Claude Code AI to extract your customizations..."
+                        echo ""
+                        echo "Creating PROJECT-SPECIFIC-CLAUDE.md with your extracted customizations..."
+                        
+                        # Create AI extraction script
+                        cat > .extract_customizations.sh << EOF
+#!/bin/bash
+# Temporary AI extraction script
+echo "Analyzing your CLAUDE.md customizations..."
+echo "This may take a moment while AI processes your file..."
+
+# Use Claude Code to extract customizations
+claude /extract-customizations "$BACKUP_FILE" > PROJECT-SPECIFIC-CLAUDE.md.extracted 2>/dev/null
+
+# Check if extraction was successful
+if [ -f "PROJECT-SPECIFIC-CLAUDE.md.extracted" ] && [ -s "PROJECT-SPECIFIC-CLAUDE.md.extracted" ]; then
+    echo "✅ AI extraction completed successfully!"
+    exit 0
+else
+    echo "⚠️  AI extraction failed or produced empty results"
+    exit 1
+fi
+EOF
+                        chmod +x .extract_customizations.sh
+                        
+                        # Run AI extraction
+                        if bash .extract_customizations.sh; then
+                            # Show preview of extracted content
+                            print_status "AI extraction completed! Here's a preview:"
+                            echo ""
+                            echo "--- Preview of extracted customizations ---"
+                            head -n 15 PROJECT-SPECIFIC-CLAUDE.md.extracted
+                            echo "... (truncated, full content will be applied) ..."
+                            echo "--- End preview ---"
+                            echo ""
+                            
+                            # Confirm application
+                            if [ -t 0 ]; then
+                                read -p "Apply these AI-extracted customizations? (Y/n): " apply_extracted
+                                apply_extracted=${apply_extracted:-Y}
+                            else
+                                apply_extracted="Y"
+                                print_info "Non-interactive mode: applying extracted customizations"
+                            fi
+                            
+                            if [[ $apply_extracted =~ ^[Yy]$ ]]; then
+                                mv PROJECT-SPECIFIC-CLAUDE.md.extracted PROJECT-SPECIFIC-CLAUDE.md
+                                print_status "✅ Applied AI-extracted customizations to PROJECT-SPECIFIC-CLAUDE.md"
+                                print_info "Your customizations have been intelligently migrated!"
+                            else
+                                print_info "AI extraction cancelled - falling back to manual migration"
+                                mv PROJECT-SPECIFIC-CLAUDE.md.template PROJECT-SPECIFIC-CLAUDE.md
+                                print_status "Created PROJECT-SPECIFIC-CLAUDE.md template for manual migration"
+                            fi
+                        else
+                            print_warning "AI extraction failed - falling back to manual migration"
+                            mv PROJECT-SPECIFIC-CLAUDE.md.template PROJECT-SPECIFIC-CLAUDE.md
+                            print_status "Created PROJECT-SPECIFIC-CLAUDE.md template for manual migration"
+                            print_info "Your backup is available at: $BACKUP_FILE"
+                        fi
+                        
+                        # Cleanup
+                        rm -f .extract_customizations.sh PROJECT-SPECIFIC-CLAUDE.md.template PROJECT-SPECIFIC-CLAUDE.md.extracted
+                    else
+                        print_warning "Claude Code CLI not found - falling back to manual migration"
+                        mv PROJECT-SPECIFIC-CLAUDE.md.template PROJECT-SPECIFIC-CLAUDE.md
+                        print_status "Created PROJECT-SPECIFIC-CLAUDE.md template for manual migration"
+                        print_info "Install Claude Code CLI to use AI-powered extraction: https://docs.anthropic.com/en/docs/claude-code"
+                    fi
+                else
+                    print_error "Failed to download PROJECT-SPECIFIC-CLAUDE.md template"
+                    exit 1
+                fi
+                ;;
+            2)
+                # Manual migration
+                print_info "📋 Setting up manual migration..."
+                if download_with_retry "https://raw.githubusercontent.com/b4lisong/claude-code-template/main/PROJECT-SPECIFIC-CLAUDE.md" "PROJECT-SPECIFIC-CLAUDE.md"; then
+                    print_status "Created PROJECT-SPECIFIC-CLAUDE.md template for manual migration"
+                    print_info "Your customizations backup is available at: $BACKUP_FILE"
+                fi
+                ;;
+            3)
+                # Skip migration for now
+                print_info "⏭️  Skipping migration - template will be updated only"
+                print_info "You can migrate customizations later using: /claude-md merge-customizations"
+                print_info "Your customizations backup is available at: $BACKUP_FILE"
+                ;;
+            *)
+                print_warning "Invalid choice - defaulting to manual migration"
+                if download_with_retry "https://raw.githubusercontent.com/b4lisong/claude-code-template/main/PROJECT-SPECIFIC-CLAUDE.md" "PROJECT-SPECIFIC-CLAUDE.md"; then
+                    print_status "Created PROJECT-SPECIFIC-CLAUDE.md template for manual migration"
+                    print_info "Your customizations backup is available at: $BACKUP_FILE"
+                fi
+                ;;
+        esac
         
+        # Update CLAUDE.md to latest template
         if download_with_retry "https://raw.githubusercontent.com/b4lisong/claude-code-template/main/CLAUDE.md" "CLAUDE.md"; then
             print_status "Updated CLAUDE.md to latest template version"
-            print_info "Your customizations backup is available for manual migration to PROJECT-SPECIFIC-CLAUDE.md"
+            if [ "$migration_choice" = "1" ] && [ -f "PROJECT-SPECIFIC-CLAUDE.md" ]; then
+                print_info "🎉 Migration complete! Your project now uses the two-file instruction system."
+            else
+                print_info "Template updated. Complete your customization migration when ready."
+            fi
         fi
     else
         # Safe to update CLAUDE.md since project customizations are separate
