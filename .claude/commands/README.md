@@ -14,6 +14,7 @@
 - **`/debug <issue>`** - Systematic debugging workflow with root cause analysis
 - **`/refactor <target>`** - Systematic code refactoring and improvement workflows
 - **`/explore <target>`** - Codebase exploration and analysis workflows
+- **`/gemini <analysis>`** - Large codebase analysis using Gemini CLI with massive context window
 
 ### **Strategic Planning**
 - **`/plan <initiative>`** - Strategic roadmap generation and planning
