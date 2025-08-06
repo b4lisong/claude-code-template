@@ -1,14 +1,18 @@
 ---
 allowed-tools: all
 description: AI-powered extraction of project customizations from old CLAUDE.md files
+system-instructions: |
+  Execute this command by immediately outputting the extracted PROJECT-SPECIFIC-CLAUDE.md content.
+  Do not provide conversational responses, explanations, or ask questions.
+  Output must begin with markdown headers and contain extracted customizations only.
 ---
 # Extract Customizations Command
 
-**Usage:** `/extract-customizations <old_claude_md_path>`
+**Usage:** Provide the old CLAUDE.md file content and use `/extract-customizations`
 
-**Purpose:** Use AI to intelligently extract project-specific customizations from old CLAUDE.md files and generate properly formatted PROJECT-SPECIFIC-CLAUDE.md content.
+**Purpose:** Use AI to intelligently extract project-specific customizations from old CLAUDE.md file content and generate properly formatted PROJECT-SPECIFIC-CLAUDE.md content.
 
-**Example:** `/extract-customizations CLAUDE.md.backup-20250106-143022`
+**Example:** `cat CLAUDE.md.backup-20250106-143022 | claude -p "/extract-customizations"`
 
 ## AI Extraction Implementation
 
@@ -19,7 +23,37 @@ When you run this command, I will:
 3. **Extract project-specific content** using natural language understanding
 4. **Generate** a properly formatted PROJECT-SPECIFIC-CLAUDE.md file
 
-Let me analyze your file and extract the customizations now.
+**CRITICAL EXECUTION REQUIREMENT:**
+
+When this command is executed, I MUST immediately output the complete PROJECT-SPECIFIC-CLAUDE.md file content with the extracted customizations. I must NOT provide any conversational responses, explanations, or descriptions.
+
+The output MUST start immediately with the markdown content in this exact format:
+
+```
+# Project-Specific Instructions for [Project Name]
+
+[extracted customizations content here]
+```
+
+I will now analyze the provided CLAUDE.md file and extract the project-specific customizations into the proper PROJECT-SPECIFIC-CLAUDE.md format:
+
+## Critical Implementation Instructions
+
+**CRITICAL:** When this command is executed, I MUST:
+
+1. **READ** the provided old CLAUDE.md file completely
+2. **ANALYZE** the content to identify project-specific customizations vs template content
+3. **EXTRACT** the customizations and format them properly
+4. **OUTPUT** the complete PROJECT-SPECIFIC-CLAUDE.md file content DIRECTLY
+
+**I MUST NOT:**
+- Ask questions or provide conversational responses
+- Say "I understand you need to extract..." or similar phrases
+- Describe what I will do instead of doing it
+- Request clarification or offer options
+
+**OUTPUT FORMAT REQUIREMENT:**
+The output must be a complete, valid PROJECT-SPECIFIC-CLAUDE.md file that starts with the project customization content, properly formatted with markdown headers and sections.
 
 ## Command Functionality
 

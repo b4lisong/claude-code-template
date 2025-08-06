@@ -466,12 +466,26 @@ echo "Analyzing your CLAUDE.md customizations..."
 echo "This may take a moment while AI processes your file..."
 
 # Use Claude Code to extract customizations
-claude /extract-customizations "$BACKUP_FILE" > PROJECT-SPECIFIC-CLAUDE.md.extracted 2>/dev/null
+cat "$BACKUP_FILE" | claude -p "/extract-customizations" > PROJECT-SPECIFIC-CLAUDE.md.extracted 2>/dev/null
 
 # Check if extraction was successful
 if [ -f "PROJECT-SPECIFIC-CLAUDE.md.extracted" ] && [ -s "PROJECT-SPECIFIC-CLAUDE.md.extracted" ]; then
-    echo "✅ AI extraction completed successfully!"
-    exit 0
+    # Enhanced validation to detect conversational responses vs actual extracted content
+    if grep -q "I understand you need to extract\|Would you like me to help\|Let me help you\|I can see it contains\|Choose migration method\|I'll help\|Here's what I've identified" PROJECT-SPECIFIC-CLAUDE.md.extracted; then
+        echo "⚠️  AI extraction produced conversational output instead of extracted content"
+        echo "     This indicates the command responded conversationally rather than extracting"
+        exit 1
+    fi
+    
+    # Check for proper PROJECT-SPECIFIC-CLAUDE.md format
+    if grep -q "^# \|^## \|PROJECT-SPECIFIC" PROJECT-SPECIFIC-CLAUDE.md.extracted && \
+       [ $(wc -l < PROJECT-SPECIFIC-CLAUDE.md.extracted) -gt 10 ]; then
+        echo "✅ AI extraction completed successfully!"
+        exit 0
+    else
+        echo "⚠️  AI extraction did not produce proper PROJECT-SPECIFIC-CLAUDE.md format"
+        exit 1
+    fi
 else
     echo "⚠️  AI extraction failed or produced empty results"
     exit 1
