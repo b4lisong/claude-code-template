@@ -856,6 +856,16 @@ if [ -f "PROJECT-SPECIFIC-CLAUDE.md" ]; then
 else
     echo "  ✓ Installed 1 configuration file (CLAUDE.md)"
 fi
+
+# Check for backup files and show migration warning
+if find . -maxdepth 1 -name "CLAUDE.md.backup-*" 2>/dev/null | grep -q .; then
+    echo ""
+    echo -e "${YELLOW}⚠️  Manual Migration Required:${NC}"
+    echo "  • Your old CLAUDE.md contained customizations that were backed up"
+    echo "  • You need to manually migrate them to PROJECT-SPECIFIC-CLAUDE.md"
+    backup_file=$(find . -maxdepth 1 -name "CLAUDE.md.backup-*" 2>/dev/null | sort -r | head -1 | sed 's|^\./||')
+    echo "  • Backup file: $backup_file"
+fi
 echo "  ✓ Installed $total_files commands and documentation files"
 echo "  ✓ Created .claude/settings.json (hook configuration)"
 echo "  ✓ Configured 3 quality hooks (smart-lint.sh + web search validation)"
@@ -884,9 +894,18 @@ echo "  /dev \"feature\" → /check → /ship \"description\""
 echo ""
 
 echo -e "${BLUE}Next Steps:${NC}"
-echo -e "  1. Start Claude Code with: ${GREEN}claude${NC}"
-echo -e "  2. Try your first TDD feature: ${GREEN}/dev \"user authentication\"${NC}"
-echo -e "  3. Get help anytime with: ${GREEN}/help${NC}"
+# Show migration as first step if backup exists
+if find . -maxdepth 1 -name "CLAUDE.md.backup-*" 2>/dev/null | grep -q .; then
+    backup_file=$(find . -maxdepth 1 -name "CLAUDE.md.backup-*" 2>/dev/null | sort -r | head -1 | sed 's|^\./||')
+    echo -e "  1. ${YELLOW}Migrate your customizations${NC} from $backup_file to PROJECT-SPECIFIC-CLAUDE.md"
+    echo -e "  2. Start Claude Code with: ${GREEN}claude${NC}"
+    echo -e "  3. Try your first TDD feature: ${GREEN}/dev \"user authentication\"${NC}"
+    echo -e "  4. Get help anytime with: ${GREEN}/help${NC}"
+else
+    echo -e "  1. Start Claude Code with: ${GREEN}claude${NC}"
+    echo -e "  2. Try your first TDD feature: ${GREEN}/dev \"user authentication\"${NC}"
+    echo -e "  3. Get help anytime with: ${GREEN}/help${NC}"
+fi
 echo ""
 
 if [ -f "PROJECT-SPECIFIC-CLAUDE.md" ]; then
