@@ -79,16 +79,6 @@ print_substep() {
     echo -e "${BLUE}[INFO]${NC} [$CURRENT_STEP.$substep/$TOTAL_STEPS] $message"
 }
 
-# Show progress for long-running sub-operations
-print_substep_progress() {
-    local substep=$1
-    local message=$2
-    
-    print_substep "$substep" "$message"
-    
-    # Return start time for progress tracking
-    date +%s
-}
 
 # Update substep progress (call this in a loop)
 update_substep_progress() {
@@ -514,7 +504,8 @@ if [ -f "CLAUDE.md" ]; then
                         fi
                         
                         # Step 5.2: AI extraction with integrated progress
-                        start_time=$(print_substep_progress "2" "AI extracting project-specific content")
+                        print_substep "2" "AI extracting project-specific content"
+                        start_time=$(date +%s)
                         
                         # Start Claude Code extraction in background
                         cat "$BACKUP_FILE" | claude -p "/extract-customizations" > PROJECT-SPECIFIC-CLAUDE.md.extracted 2>/dev/null &
