@@ -81,6 +81,38 @@ Quick reference for all available Claude Code commands in this template.
 - Tracks learning objectives and skill progression
 - Provides safe backup and migration capabilities
 
+### `/extract-customizations <backup_file>`
+**Purpose:** AI-powered extraction of customizations from old CLAUDE.md files  
+**Example:** `/extract-customizations CLAUDE.md.backup-20250106-143022`  
+
+**What it does:**
+- Uses Claude Code AI to intelligently analyze old CLAUDE.md files
+- Distinguishes between template content and project-specific customizations
+- Automatically extracts and categorizes customizations by type
+- Generates properly formatted PROJECT-SPECIFIC-CLAUDE.md content
+- Shows preview of extracted content before applying changes
+
+**AI Analysis Process:**
+- **Language Rules**: Detects TypeScript, Python, Rust, Go quality standards
+- **Project Structure**: Identifies directory layouts and naming conventions  
+- **Team Standards**: Extracts code review, deployment, and workflow practices
+- **Learning Goals**: Captures skill progression and mastery tracking
+- **Domain Rules**: Finds compliance requirements (HIPAA, PCI DSS, GDPR)
+- **Quality Gates**: Identifies custom validation and testing requirements
+
+**Advantages over Manual Migration:**
+✅ **Context Understanding** - AI grasps intent behind customizations  
+✅ **Complete Extraction** - Handles complex nested content and edge cases  
+✅ **Smart Categorization** - Places content in appropriate sections automatically  
+✅ **Proper Formatting** - Maintains markdown structure and code blocks  
+✅ **Safe Process** - Always requires user confirmation before applying  
+
+**Usage Scenarios:**
+- **Template Updates**: Primary migration method during setup.sh upgrades
+- **Manual Migration**: Extract customizations from backup files manually
+- **Recovery**: Restore customizations from old backup files
+- **Project Conversion**: Migrate single-file projects to two-file system
+
 ## 🛠️ Utility Commands
 
 ### `/help [command]`
@@ -167,15 +199,69 @@ The template uses a dual-file system for safe template updates:
 # Use Refactoring-Specialist for safe code improvements
 ```
 
+### Template Update Workflows
+
+#### AI-Powered Template Update (Recommended)
+```bash
+# Update existing project with AI migration
+curl -sL https://raw.githubusercontent.com/b4lisong/claude-code-template/main/setup.sh | bash
+
+# Interactive process:
+# [1] AI Extraction (Recommended) ← Choose this
+# ✅ Backup created automatically
+# ✅ AI analyzes your customizations  
+# ✅ Preview extracted content
+# ✅ Confirm migration: Y
+# ✅ Migration complete!
+
+# Resume development with latest features:
+claude
+/dev "new feature with updated template"
+```
+
+#### Manual AI Extraction
+```bash
+# Extract customizations from backup manually
+claude                                        # Start Claude Code
+/extract-customizations backup-file.md       # AI extract from backup
+# Preview shown → Confirm → Applied
+
+# Alternative command:
+/claude-md extract-ai backup-file.md         # Same AI extraction
+```
+
+#### Template Update with Manual Migration
+```bash
+# Update template, migrate customizations manually
+curl -sL https://raw.githubusercontent.com/b4lisong/claude-code-template/main/setup.sh | bash
+
+# Choose option [2] Manual Migration
+# ✅ PROJECT-SPECIFIC-CLAUDE.md template created
+# ✅ Your backup preserved: CLAUDE.md.backup-file
+
+# Manually migrate your customizations:
+/claude-md merge-customizations              # Get migration guidance
+```
+
+#### Recovery from Backup
+```bash  
+# Restore customizations from old backup
+claude
+/extract-customizations old-backup.md       # AI extract from any backup
+# Or manually restore specific sections to PROJECT-SPECIFIC-CLAUDE.md
+```
+
 ## 💡 Pro Tips
 
 1. **Always start with `/dev`** for new features - TDD prevents bugs
 2. **Run `/check` before `/ship`** - Ensure quality standards
 3. **Use `/plan` for complex features** - Break down before building
-4. **Customize PROJECT-SPECIFIC-CLAUDE.md** - Add your project's specific needs
-5. **Run `/claude-md backup`** - Before major instruction changes
-6. **Update `/claude-md update-mastery`** - Weekly learning progress tracking
-7. **Use `/agents` for complex tasks** - Delegate to specialized sub-agents
+4. **Use AI extraction for template updates** - More reliable than manual migration
+5. **Customize PROJECT-SPECIFIC-CLAUDE.md** - Add your project's specific needs
+6. **Run `/claude-md backup`** - Before major instruction changes
+7. **Update `/claude-md update-mastery`** - Weekly learning progress tracking
+8. **Preview AI extractions** - Always review before confirming migrations
+9. **Use `/agents` for complex tasks** - Delegate to specialized sub-agents
 
 ## 🚫 Command Guidelines
 

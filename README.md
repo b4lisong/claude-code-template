@@ -32,7 +32,7 @@ claude                                # Start Claude Code
 
 ## What You Get
 
-### 🎯 **9 Power Commands**
+### 🎯 **10 Power Commands**
 - **`/dev`** - TDD-first development (primary command)
 - **`/debug`** - Systematic debugging workflow
 - **`/refactor`** - Code improvement with safety nets
@@ -42,6 +42,7 @@ claude                                # Start Claude Code
 - **`/help`** - Interactive guidance
 - **`/prompt`** - Context handoff
 - **`/claude-md`** - Manage template and project-specific instructions
+- **`/extract-customizations`** - AI-powered customization migration
 
 ### 🛡️ **Quality Automation**
 - **Git hooks** prevent Claude attribution and emojis in commits
@@ -151,13 +152,105 @@ claude                           # Start Claude Code
 /claude-md update-mastery        # Track your learning goals
 ```
 
+## Template Updates & Migration
+
+### 🤖 **AI-Powered Template Updates**
+
+Updating to the latest template features is seamless with intelligent AI migration that preserves all your project customizations:
+
+```bash
+# Update existing project to latest template
+curl -H 'Cache-Control: no-cache' -sL https://raw.githubusercontent.com/b4lisong/claude-code-template/main/setup.sh | bash
+```
+
+### **Interactive Migration Process**
+
+When customizations are detected, you'll see three migration options:
+
+**Option 1: AI Extraction (Recommended)** 🎯
+- Claude Code AI analyzes your old customizations
+- Intelligently extracts and categorizes project-specific content  
+- Generates properly formatted PROJECT-SPECIFIC-CLAUDE.md
+- Shows preview before applying changes
+- Most reliable method with natural language understanding
+
+**Option 2: Manual Migration** 📋
+- Creates PROJECT-SPECIFIC-CLAUDE.md template
+- Preserves backup of your old customizations
+- Guide manual transfer of custom rules and settings
+
+**Option 3: Skip Migration** ⏭️
+- Updates template only, migrate customizations later
+- Use `/claude-md extract-ai <backup_file>` when ready
+
+### **AI Migration Advantages**
+
+✅ **Context Understanding** - AI grasps intent behind customizations, not just text patterns  
+✅ **Complete Extraction** - Captures complex nested customizations and unexpected formats  
+✅ **Smart Categorization** - Places content in appropriate PROJECT-SPECIFIC-CLAUDE.md sections  
+✅ **Proper Formatting** - Generates correctly structured output with preserved meaning  
+✅ **Safe Process** - Always shows preview and requires confirmation before applying  
+
+### **Migration Safety Features**
+
+🛡️ **Multiple Backups** - Timestamped backups created automatically  
+🛡️ **Preview System** - See exactly what will be migrated before confirming  
+🛡️ **Graceful Fallbacks** - If AI extraction fails, fallback to manual migration  
+🛡️ **Recovery Options** - Original backups always preserved for manual restoration  
+🛡️ **Validation Checks** - Ensures extracted content is properly formatted  
+
+### **Manual AI Extraction**
+
+You can also run AI extraction manually on any backup file:
+
+```bash
+claude                                           # Start Claude Code
+/extract-customizations CLAUDE.md.backup-file   # AI extract from backup
+/claude-md extract-ai CLAUDE.md.backup-file     # Alternative command
+```
+
+### **What Gets Migrated**
+
+The AI extraction intelligently identifies and migrates:
+- **Language-specific quality rules** (TypeScript, Python, Rust, etc.)
+- **Project structure definitions** and naming conventions  
+- **Team standards and practices** (code review, deployment)
+- **Learning objectives** and skill progression tracking
+- **Domain-specific requirements** (compliance, performance)
+- **Custom quality gates** and validation rules
+
+### **Update Workflow Example**
+
+```bash
+# Run template update
+curl -sL https://raw.githubusercontent.com/b4lisong/claude-code-template/main/setup.sh | bash
+
+# Interactive options appear:
+# [1] AI Extraction (Recommended)
+# [2] Manual Migration  
+# [3] Skip Migration
+
+# Choose AI extraction:
+# ✅ Backup created: CLAUDE.md.backup-20250106-143022
+# ✅ AI analyzing customizations...
+# ✅ Preview of extracted content shown
+# ✅ Confirm migration: Y
+# ✅ Migration complete! Two-file system ready.
+
+# Resume development:
+claude
+/dev "new feature with latest template"
+```
+
 ## Key Features
 
 - **TDD-First**: Tests drive development, not an afterthought
+- **AI-Powered Migration**: Intelligent template updates preserve project customizations
 - **Systematic**: Structured workflows for debugging, refactoring, shipping
 - **Quality-First**: Automated hooks prevent common issues
 - **Learning-Focused**: Build skills while building products
 - **Professional**: Clean commits, proper documentation, consistent standards
+- **Safe Updates**: Two-file system enables template upgrades without data loss
 
 ## Requirements
 
