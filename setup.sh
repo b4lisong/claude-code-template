@@ -488,7 +488,6 @@ if [ -f "CLAUDE.md" ]; then
     else
         # Safe to update CLAUDE.md since project customizations are separate
         print_info "Updating CLAUDE.md to latest template version..."
-        cp CLAUDE.md "CLAUDE.md.backup-$(date +%Y%m%d-%H%M%S)"
         
         if download_with_retry "https://raw.githubusercontent.com/b4lisong/claude-code-template/main/CLAUDE.md" "CLAUDE.md"; then
             print_status "Updated CLAUDE.md with latest template"
@@ -857,8 +856,8 @@ else
     echo "  ✓ Installed 1 configuration file (CLAUDE.md)"
 fi
 
-# Check for backup files and show migration warning
-if find . -maxdepth 1 -name "CLAUDE.md.backup-*" 2>/dev/null | grep -q .; then
+# Check for backup files and show migration warning (only if PROJECT-SPECIFIC-CLAUDE.md doesn't exist)
+if find . -maxdepth 1 -name "CLAUDE.md.backup-*" 2>/dev/null | grep -q . && [ ! -f "PROJECT-SPECIFIC-CLAUDE.md" ]; then
     echo ""
     echo -e "${YELLOW}⚠️  Manual Migration Required:${NC}"
     echo "  • Your old CLAUDE.md contained customizations that were backed up"
@@ -894,8 +893,8 @@ echo "  /dev \"feature\" → /check → /ship \"description\""
 echo ""
 
 echo -e "${BLUE}Next Steps:${NC}"
-# Show migration as first step if backup exists
-if find . -maxdepth 1 -name "CLAUDE.md.backup-*" 2>/dev/null | grep -q .; then
+# Show migration as first step if backup exists and PROJECT-SPECIFIC-CLAUDE.md doesn't exist
+if find . -maxdepth 1 -name "CLAUDE.md.backup-*" 2>/dev/null | grep -q . && [ ! -f "PROJECT-SPECIFIC-CLAUDE.md" ]; then
     backup_file=$(find . -maxdepth 1 -name "CLAUDE.md.backup-*" 2>/dev/null | sort -r | head -1 | sed 's|^\./||')
     echo -e "  1. ${YELLOW}Migrate your customizations${NC} from $backup_file to PROJECT-SPECIFIC-CLAUDE.md"
     echo -e "  2. Start Claude Code with: ${GREEN}claude${NC}"
