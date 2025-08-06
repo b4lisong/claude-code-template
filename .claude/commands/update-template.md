@@ -1,6 +1,6 @@
 ---
 allowed-tools: all
-description: Update the Claude Code template to the latest version with AI-powered migration
+description: Update the Claude Code template to the latest version with manual migration guidance
 ---
 # Update Template Command
 
@@ -10,13 +10,13 @@ description: Update the Claude Code template to the latest version with AI-power
 
 ## How It Works
 
-This command executes the official template update process with intelligent migration:
+This command executes the official template update process with manual migration guidance:
 
 1. **Downloads latest setup script** from GitHub
 2. **Detects existing customizations** in your CLAUDE.md file  
-3. **Offers AI-powered extraction** to preserve your project settings
-4. **Creates automatic backups** of your current configuration
-5. **Guides you through migration** with interactive options
+3. **Creates automatic backups** of your current configuration
+4. **Provides manual migration guidance** to preserve your project settings
+5. **Guides you through the process** with clear instructions
 
 ## Pre-Update Safety Checks
 
@@ -32,19 +32,20 @@ The command runs:
 curl -sL https://raw.githubusercontent.com/b4lisong/claude-code-template/main/setup.sh | bash
 ```
 
-**Interactive Options You'll See:**
-- **[1] AI Extraction (Recommended)** - Let AI automatically extract your customizations
-- **[2] Manual Migration** - Create PROJECT-SPECIFIC-CLAUDE.md template for manual editing
-- **[3] Skip Migration** - Update template only, migrate later
+**What Happens During Update:**
+- **Automatic Backup** - Your existing CLAUDE.md is backed up with timestamp
+- **Manual Migration Required** - You'll need to manually migrate customizations to PROJECT-SPECIFIC-CLAUDE.md
+- **Template Updated** - CLAUDE.md is updated to the latest template version
+- **Clear Guidance** - Setup provides step-by-step migration instructions
 
-## AI-Powered Migration Benefits
+## Manual Migration Process
 
-When you choose AI extraction:
-- **Context Understanding** - AI grasps the intent behind your customizations
-- **Complete Extraction** - Handles complex nested content and edge cases
-- **Smart Categorization** - Places content in appropriate sections automatically
-- **Proper Formatting** - Maintains markdown structure and code blocks
-- **Safe Process** - Shows preview and requires confirmation before applying
+The update process will:
+- **Create timestamped backup** of your current CLAUDE.md
+- **Show migration warning** with backup filename for your reference
+- **Create PROJECT-SPECIFIC-CLAUDE.md template** for your customizations
+- **Provide clear instructions** on what to migrate and how
+- **Preserve all your content** in the backup file for safe migration
 
 ## What Gets Updated
 
@@ -92,9 +93,9 @@ If something goes wrong:
 - Note any specific project requirements
 
 **During Update:**
-- Choose AI extraction for most reliable migration
-- Review preview of extracted content carefully
-- Confirm migration only if content looks correct
+- Note the backup filename provided during setup
+- Follow the manual migration guidance provided
+- Review your backup file to identify project-specific content
 
 **After Update:**
 - Test key workflows to ensure nothing broke
@@ -119,9 +120,9 @@ claude
 # Update template with latest features
 /update-template
 
-# Choose [1] AI Extraction when prompted
-# Review extracted customizations
-# Confirm migration
+# Note the backup filename displayed
+# Follow manual migration guidance
+# Migrate customizations to PROJECT-SPECIFIC-CLAUDE.md
 
 # Resume development with updated template
 /dev "new feature with latest template"

@@ -8,14 +8,13 @@ description: Manage template and project-specific instruction files
 - `/claude-md backup` - Create timestamped backup of both instruction files
 - `/claude-md update-mastery` - Update skill progression in PROJECT-SPECIFIC-CLAUDE.md
 - `/claude-md create-project` - Create PROJECT-SPECIFIC-CLAUDE.md if missing
-- `/claude-md merge-customizations` - Help migrate old CLAUDE.md customizations
-- `/claude-md extract-ai <backup_file>` - AI-powered extraction from old CLAUDE.md backup
+- `/claude-md merge-customizations` - Help migrate old CLAUDE.md customizations (EXPERIMENTAL, WIP)
 
 **Examples:**
 - `/claude-md backup` - Backup both CLAUDE.md and PROJECT-SPECIFIC-CLAUDE.md
 - `/claude-md update-mastery` - Update your learning objectives and skill levels
 - `/claude-md create-project` - Set up project-specific customization file
-- `/claude-md extract-ai CLAUDE.md.backup-20250106-143022` - Use AI to extract customizations from backup
+- `/claude-md merge-customizations` - Get guidance for migrating customizations from backup (EXPERIMENTAL, WIP)
 
 Manages the two-file instruction system: template instructions (CLAUDE.md) and project customizations (PROJECT-SPECIFIC-CLAUDE.md).
 
@@ -65,19 +64,6 @@ Manages the two-file instruction system: template instructions (CLAUDE.md) and p
   - Learning progression tracking
   - Team-specific standards
 
-### **`/claude-md extract-ai <backup_file>`**
-- **AI-Powered Migration** - Use Claude Code's natural language understanding to automatically extract customizations
-- Intelligently analyzes old CLAUDE.md files to identify project-specific content vs template content
-- Automatically generates properly formatted PROJECT-SPECIFIC-CLAUDE.md with extracted customizations
-- Provides preview before applying changes for user review and confirmation
-- Much more reliable than manual extraction, handles complex and unexpected customization patterns
-- **Usage**: `/claude-md extract-ai CLAUDE.md.backup-20250106-143022`
-- **Benefits**:
-  - **Intelligent Analysis**: AI understands context and intent, not just patterns
-  - **Complete Extraction**: Captures all customizations including complex, nested content
-  - **Proper Formatting**: Generates correctly structured PROJECT-SPECIFIC-CLAUDE.md
-  - **Safe Process**: Always shows preview and requires confirmation before applying
-  - **Fallback Support**: If AI extraction fails, provides clear guidance for manual migration
 
 ## Integration with Template Updates
 
@@ -115,11 +101,11 @@ Manages the two-file instruction system: template instructions (CLAUDE.md) and p
 - Coordinate with team members to maintain consistent project standards
 
 **Migration Best Practices:**
-- **Use AI extraction first**: `/claude-md extract-ai <backup_file>` is the most reliable migration method
-- **Review AI output**: Always preview extracted content before applying
-- **Keep backups**: Original backup files are preserved even after AI extraction
-- **Fallback to manual**: If AI extraction doesn't work perfectly, use `/claude-md merge-customizations`
-- **Iterative refinement**: AI extraction provides excellent starting point, refine as needed
+- **Manual migration recommended**: Review backup files and manually migrate customizations
+- **Experimental option**: `/claude-md merge-customizations` (EXPERIMENTAL, WIP) provides migration assistance
+- **Keep backups**: Original backup files are preserved for reference
+- **Manual approach**: Currently the most reliable method for preserving customizations
+- **Iterative refinement**: Migrate section by section, testing as you go
 
 **Maintenance Schedule:**
 - **Backup**: Before major instruction changes

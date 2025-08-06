@@ -82,7 +82,7 @@ Quick reference for all available Claude Code commands in this template.
 - Provides safe backup and migration capabilities
 
 ### `/extract-customizations <backup_file>`
-**Purpose:** AI-powered extraction of customizations from old CLAUDE.md files  
+**Purpose:** AI-powered extraction of customizations from old CLAUDE.md files (EXPERIMENTAL)  
 **Example:** `/extract-customizations CLAUDE.md.backup-20250106-143022`  
 
 **What it does:**
@@ -116,12 +116,12 @@ Quick reference for all available Claude Code commands in this template.
 ## 🛠️ Utility Commands
 
 ### `/update-template`
-**Purpose:** Update template to latest version with AI-powered migration  
+**Purpose:** Update template to latest version with manual migration guidance  
 **Example:** `/update-template`  
 **What it does:**
 - Downloads latest template from GitHub
-- Preserves project customizations automatically
-- Uses AI to extract and migrate settings
+- Creates backup of existing customizations
+- Provides clear guidance for manual migration
 - Creates backups for safe recovery
 
 ### `/help [command]`
@@ -210,46 +210,31 @@ The template uses a dual-file system for safe template updates:
 
 ### Template Update Workflows
 
-#### AI-Powered Template Update (Recommended)
+#### Template Update with Manual Migration (Primary Method)
 ```bash
-# Update existing project with AI migration
+# Update existing project with manual migration guidance
 curl -sL https://raw.githubusercontent.com/b4lisong/claude-code-template/main/setup.sh | bash
 
-# Interactive process:
-# [1] AI Extraction (Recommended) ← Choose this
-# ✅ Backup created automatically
-# ✅ AI analyzes your customizations  
-# ✅ Preview extracted content
-# ✅ Confirm migration: Y
-# ✅ Migration complete!
+# Setup automatically provides:
+# ⚠️ Manual Migration Required warning
+# 📄 Backup created: CLAUDE.md.backup-TIMESTAMP
+# 📋 Step-by-step migration instructions
+# ✅ PROJECT-SPECIFIC-CLAUDE.md template created
 
 # Resume development with latest features:
 claude
 /dev "new feature with updated template"
 ```
 
-#### Manual AI Extraction
+#### Experimental AI Extraction
 ```bash
-# Extract customizations from backup manually
+# Try experimental AI extraction from backup
 claude                                        # Start Claude Code
-/extract-customizations backup-file.md       # AI extract from backup
-# Preview shown → Confirm → Applied
+/extract-customizations backup-file.md       # EXPERIMENTAL AI extract from backup
+# Note: May produce conversational output instead of raw content
 
-# Alternative command:
-/claude-md extract-ai backup-file.md         # Same AI extraction
-```
-
-#### Template Update with Manual Migration
-```bash
-# Update template, migrate customizations manually
-curl -sL https://raw.githubusercontent.com/b4lisong/claude-code-template/main/setup.sh | bash
-
-# Choose option [2] Manual Migration
-# ✅ PROJECT-SPECIFIC-CLAUDE.md template created
-# ✅ Your backup preserved: CLAUDE.md.backup-file
-
-# Manually migrate your customizations:
-/claude-md merge-customizations              # Get migration guidance
+# Alternative experimental command:
+/claude-md merge-customizations               # EXPERIMENTAL, WIP migration guidance
 ```
 
 #### Recovery from Backup
@@ -266,11 +251,11 @@ claude
 2. **Run `/check` before `/ship`** - Ensure quality standards
 3. **Use `/plan` for complex features** - Break down before building
 4. **Use `/update-template` weekly** - Stay current with latest improvements
-5. **Use AI extraction for template updates** - More reliable than manual migration
+5. **Use manual migration for template updates** - Most reliable method to preserve customizations
 6. **Customize PROJECT-SPECIFIC-CLAUDE.md** - Add your project's specific needs
 7. **Run `/claude-md backup`** - Before major instruction changes
 8. **Update `/claude-md update-mastery`** - Weekly learning progress tracking
-9. **Preview AI extractions** - Always review before confirming migrations
+9. **Review backup files carefully** - Ensure all customizations are migrated
 10. **Use `/agents` for complex tasks** - Delegate to specialized sub-agents
 
 ## 🚫 Command Guidelines
