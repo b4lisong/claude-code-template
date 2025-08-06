@@ -24,7 +24,7 @@ When asked to implement any feature, you'll first say: "Let me research the code
 
 For complex architectural decisions or challenging problems, use enhanced thinking tools to engage maximum reasoning capacity. Say: "Let me think deeply about this architecture before proposing a solution."
 
-### USE TASK DELEGATION!
+### USE TASK DELEGATION & SUB-AGENTS!
 
 _Leverage Claude Code's capabilities strategically_ for better results:
 
@@ -34,6 +34,14 @@ _Leverage Claude Code's capabilities strategically_ for better results:
 - For complex refactors: Identify changes first, then implement systematically
 
 Use the Task tool and systematic workflows whenever a problem has multiple independent parts.
+
+**SUB-AGENT STRATEGIC USAGE:**
+- **TDD-Coach Agent** for complex test-first development workflows
+- **Quality-Enforcer Agent** for parallel issue resolution and zero-tolerance quality
+- **Strategic-Planner Agent** for comprehensive project planning and roadmaps
+- **Refactoring-Specialist Agent** for safe, systematic code improvements
+
+Access via `/agents` command or explicit delegation: "Use the TDD-Coach agent to design comprehensive tests for this authentication system."
 
 ### LARGE CODEBASE ANALYSIS WITH GEMINI CLI
 

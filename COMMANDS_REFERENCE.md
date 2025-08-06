@@ -89,6 +89,15 @@ Quick reference for all available Claude Code commands in this template.
 - Includes relevant files
 - Formats for LLM consumption
 
+### `/agents`
+**Purpose:** Manage specialized sub-agents for complex tasks  
+**Example:** `/agents` (opens sub-agent interface)  
+**What it does:**
+- Create and configure specialized sub-agents
+- Delegate complex tasks to focused agents
+- Coordinate multi-agent workflows
+- Access template-specific agents (TDD-Coach, Quality-Enforcer, Strategic-Planner, Refactoring-Specialist)
+
 ## 🎯 Quick Workflows
 
 ### Standard Development Flow
@@ -113,12 +122,22 @@ Quick reference for all available Claude Code commands in this template.
 /ship "refactor: component" # Commit improvements
 ```
 
+### Sub-Agent Workflow Examples
+```
+/agents                    # Open sub-agent interface
+# Use TDD-Coach for complex test design
+# Use Quality-Enforcer for parallel issue fixing  
+# Use Strategic-Planner for comprehensive roadmaps
+# Use Refactoring-Specialist for safe code improvements
+```
+
 ## 💡 Pro Tips
 
 1. **Always start with `/dev`** for new features - TDD prevents bugs
 2. **Run `/check` before `/ship`** - Ensure quality standards
 3. **Use `/plan` for complex features** - Break down before building
 4. **Update `/claude-md` regularly** - Capture team knowledge
+5. **Use `/agents` for complex tasks** - Delegate to specialized sub-agents
 
 ## 🚫 Command Guidelines
 

@@ -15,6 +15,7 @@
 - **`/refactor <target>`** - Systematic code refactoring and improvement workflows
 - **`/explore <target>`** - Codebase exploration and analysis workflows
 - **`/gemini <analysis>`** - Large codebase analysis using Gemini CLI with massive context window
+- **`/agents`** - Specialized sub-agent management for complex, multi-step tasks
 
 ### **Strategic Planning**
 - **`/plan <initiative>`** - Strategic roadmap generation and planning
@@ -50,6 +51,17 @@ These commands embody our development philosophy:
 /dev "implement user authentication"   # Full TDD cycle
 /check                                 # Quality verification  
 /ship "add JWT authentication"         # Professional commit
+```
+
+**Enhanced Multi-Agent Development:**
+```bash
+/agents                                # Access specialized agents
+# Use TDD-Coach for complex test design
+# Use Quality-Enforcer for parallel issue resolution
+# Use Strategic-Planner for comprehensive roadmaps
+/dev "complex authentication system"   # Delegate to TDD-Coach agent
+/check                                 # Quality-Enforcer handles issues
+/ship "add enterprise auth system"     # Professional commit
 ```
 
 **Strategic Planning & Implementation:**
