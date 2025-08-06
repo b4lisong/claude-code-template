@@ -23,7 +23,7 @@ else
 fi
 
 # Setup configuration
-TOTAL_STEPS=9
+TOTAL_STEPS=9  # Main steps remain the same (sub-steps are tracked within each main step)
 CURRENT_STEP=0
 START_TIME=$(date +%s)
 ESTIMATED_DURATION=30  # seconds
@@ -63,62 +63,6 @@ progress_bar() {
     # Progress pattern examples: [1/8] [2/8] [3/8] etc.
 }
 
-# AI Progress tracking for long-running operations
-show_ai_progress() {
-    local operation=$1
-    local start_time=$(date +%s)
-    local pid=$2  # Process ID to monitor
-    local estimated_duration=${3:-30}  # Default 30 seconds
-    
-    echo -e "${BLUE}🤖 ${operation}${NC}"
-    
-    # Background progress monitor
-    {
-        local elapsed=0
-        while kill -0 "$pid" 2>/dev/null; do
-            elapsed=$(($(date +%s) - start_time))
-            
-            # Progress dots animation
-            case $((elapsed % 4)) in
-                0) dots="   " ;;
-                1) dots=".  " ;;
-                2) dots=".. " ;;
-                3) dots="..." ;;
-            esac
-            
-            # Update progress in-place - pad with spaces to clear previous content
-            if [ -n "$BLUE" ]; then
-                printf "\r${BLUE}⚡ %s... (%ds)${NC}%s        " "$operation" $elapsed "$dots"
-            else
-                printf "\r⚡ %s... (%ds)%s        " "$operation" $elapsed "$dots"
-            fi
-            
-            sleep 1
-        done
-        echo ""  # New line after process completes
-    } &
-    
-    local progress_pid=$!
-    
-    # Wait for the main process to complete
-    wait "$pid" 2>/dev/null
-    local exit_code=$?
-    
-    # Stop the progress monitor
-    kill "$progress_pid" 2>/dev/null
-    wait "$progress_pid" 2>/dev/null
-    
-    # Final status
-    elapsed=$(($(date +%s) - start_time))
-    if [ $exit_code -eq 0 ]; then
-        echo -e "${GREEN}✅ ${operation} completed successfully! (${elapsed}s)${NC}"
-    else
-        echo -e "${RED}❌ ${operation} failed after ${elapsed}s${NC}"
-    fi
-    
-    return $exit_code
-}
-
 # Enhanced print functions
 print_step() {
     CURRENT_STEP=$((CURRENT_STEP + 1))
@@ -126,6 +70,53 @@ print_step() {
     progress_bar $CURRENT_STEP $TOTAL_STEPS
     echo ""
     echo -e "${GREEN}[OK]${NC} [$CURRENT_STEP/$TOTAL_STEPS] $1"
+}
+
+# Print sub-step within current main step
+print_substep() {
+    local substep=$1
+    local message=$2
+    echo -e "${BLUE}[INFO]${NC} [$CURRENT_STEP.$substep/$TOTAL_STEPS] $message"
+}
+
+# Show progress for long-running sub-operations
+print_substep_progress() {
+    local substep=$1
+    local message=$2
+    
+    print_substep "$substep" "$message"
+    
+    # Return start time for progress tracking
+    date +%s
+}
+
+# Update substep progress (call this in a loop)
+update_substep_progress() {
+    local substep=$1
+    local message=$2
+    local start_time=$3
+    local elapsed=$(($(date +%s) - start_time))
+    
+    # Progress dots animation
+    case $((elapsed % 4)) in
+        0) dots="   " ;;
+        1) dots=".  " ;;
+        2) dots=".. " ;;
+        3) dots="..." ;;
+    esac
+    
+    printf "\r${BLUE}[INFO]${NC} [$CURRENT_STEP.$substep/$TOTAL_STEPS] $message (%ds)$dots        " $elapsed
+}
+
+# Complete substep with final status
+complete_substep() {
+    local substep=$1
+    local message=$2
+    local start_time=$3
+    local elapsed=$(($(date +%s) - start_time))
+    
+    echo ""  # New line after progress updates
+    echo -e "${GREEN}[OK]${NC} [$CURRENT_STEP.$substep/$TOTAL_STEPS] $message completed (${elapsed}s)"
 }
 
 print_status() {
@@ -514,102 +505,66 @@ if [ -f "CLAUDE.md" ]; then
                         echo ""
                         echo "Creating PROJECT-SPECIFIC-CLAUDE.md with your extracted customizations..."
                         
-                        # Create AI extraction script
-                        cat > .extract_customizations.sh << 'EOF'
-#!/bin/bash
-# Temporary AI extraction script
-
-# Define colors directly in script
-if [ "${NO_COLOR:-}" != "true" ] && [ "${TERM:-}" != "dumb" ]; then
-    BLUE='\033[0;34m'
-    GREEN='\033[0;32m'
-    RED='\033[0;31m'
-    YELLOW='\033[1;33m'
-    NC='\033[0m'
-else
-    BLUE='' GREEN='' RED='' YELLOW='' NC=''
-fi
-
-# Show file context to user
-if [ -f "$BACKUP_FILE" ]; then
-    file_size=$(wc -c < "$BACKUP_FILE" 2>/dev/null || echo "unknown")
-    line_count=$(wc -l < "$BACKUP_FILE" 2>/dev/null || echo "unknown")
-    
-    echo -e "${BLUE}📋 Analyzing your CLAUDE.md customizations...${NC}"
-    echo "   File size: ${file_size} bytes (${line_count} lines)"
-    echo "   Estimated time: 15-30 seconds depending on complexity"
-    echo ""
-fi
-
-# Use Claude Code to extract customizations with progress tracking
-echo -e "${BLUE}🤖 Claude Code analyzing customizations${NC}"
-start_time=$(date +%s)
-
-# Start Claude Code extraction in background
-cat "$BACKUP_FILE" | claude -p "/extract-customizations" > PROJECT-SPECIFIC-CLAUDE.md.extracted 2>/dev/null &
-claude_pid=$!
-
-# Show progress animation while it runs
-while kill -0 "$claude_pid" 2>/dev/null; do
-    elapsed=$(($(date +%s) - start_time))
-    
-    # Progress dots animation
-    case $((elapsed % 4)) in
-        0) dots="   " ;;
-        1) dots=".  " ;;
-        2) dots=".. " ;;
-        3) dots="..." ;;
-    esac
-    
-    # Update progress in-place - pad with spaces to clear previous content
-    printf "\r${BLUE}⚡ AI extracting... (%ds)${NC}%s        " $elapsed "$dots"
-    
-    sleep 1
-done
-
-# Get final results
-elapsed=$(($(date +%s) - start_time))
-wait $claude_pid
-claude_exit_code=$?
-
-echo ""  # New line after progress
-if [ $claude_exit_code -eq 0 ]; then
-    echo -e "${GREEN}✅ Claude Code analyzing customizations completed successfully! (${elapsed}s)${NC}"
-else
-    echo -e "${RED}❌ Claude Code analyzing customizations failed after ${elapsed}s${NC}"
-    exit $claude_exit_code
-fi
-
-# Validate extraction quality and show statistics
-if [ -f "PROJECT-SPECIFIC-CLAUDE.md.extracted" ] && [ -s "PROJECT-SPECIFIC-CLAUDE.md.extracted" ]; then
-    # Enhanced validation to detect conversational responses vs actual extracted content
-    if grep -q "I understand you need to extract\|Would you like me to help\|Let me help you\|I can see it contains\|Choose migration method\|I'll help\|Here's what I've identified" PROJECT-SPECIFIC-CLAUDE.md.extracted; then
-        echo -e "${YELLOW}⚠️  AI extraction produced conversational output instead of extracted content${NC}"
-        echo "     This indicates the command responded conversationally rather than extracting"
-        exit 1
-    fi
-    
-    # Check for proper PROJECT-SPECIFIC-CLAUDE.md format
-    if grep -q "^# \|^## \|PROJECT-SPECIFIC" PROJECT-SPECIFIC-CLAUDE.md.extracted && \
-       [ $(wc -l < PROJECT-SPECIFIC-CLAUDE.md.extracted) -gt 10 ]; then
-        # Extract statistics for user feedback
-        sections=$(grep -c "^## " PROJECT-SPECIFIC-CLAUDE.md.extracted)
-        lines=$(wc -l < PROJECT-SPECIFIC-CLAUDE.md.extracted)
-        echo -e "${GREEN}🎯 Extracted ${sections} sections with ${lines} lines of customizations${NC}"
-        exit 0
-    else
-        echo -e "${YELLOW}⚠️  AI extraction did not produce proper PROJECT-SPECIFIC-CLAUDE.md format${NC}"
-        exit 1
-    fi
-else
-    echo -e "${RED}⚠️  AI extraction failed or produced empty results${NC}"
-    exit 1
-fi
-EOF
-                        chmod +x .extract_customizations.sh
+                        # Step 5.1: Show file analysis context
+                        print_substep "1" "Analyzing existing CLAUDE.md customizations"
+                        if [ -f "$BACKUP_FILE" ]; then
+                            file_size=$(wc -c < "$BACKUP_FILE" 2>/dev/null || echo "unknown")
+                            line_count=$(wc -l < "$BACKUP_FILE" 2>/dev/null || echo "unknown")
+                            print_info "File size: ${file_size} bytes (${line_count} lines)"
+                        fi
                         
-                        # Run AI extraction
-                        if bash .extract_customizations.sh; then
+                        # Step 5.2: AI extraction with integrated progress
+                        start_time=$(print_substep_progress "2" "AI extracting project-specific content")
+                        
+                        # Start Claude Code extraction in background
+                        cat "$BACKUP_FILE" | claude -p "/extract-customizations" > PROJECT-SPECIFIC-CLAUDE.md.extracted 2>/dev/null &
+                        claude_pid=$!
+                        
+                        # Show progress using integrated system
+                        while kill -0 "$claude_pid" 2>/dev/null; do
+                            update_substep_progress "2" "AI extracting project-specific content" "$start_time"
+                            sleep 1
+                        done
+                        
+                        # Wait for completion and check status
+                        wait $claude_pid
+                        claude_exit_code=$?
+                        
+                        if [ $claude_exit_code -ne 0 ]; then
+                            echo ""
+                            print_error "AI extraction failed"
+                            return 1
+                        fi
+                        
+                        complete_substep "2" "AI extracting project-specific content" "$start_time"
+                        
+                        # Step 5.3: Validate extraction quality
+                        print_substep "3" "Validating extracted customizations"
+                        
+                        if [ -f "PROJECT-SPECIFIC-CLAUDE.md.extracted" ] && [ -s "PROJECT-SPECIFIC-CLAUDE.md.extracted" ]; then
+                            # Enhanced validation to detect conversational responses
+                            if grep -q "I understand you need to extract\|Would you like me to help\|Let me help you\|I can see it contains\|Choose migration method\|I'll help\|Here's what I've identified" PROJECT-SPECIFIC-CLAUDE.md.extracted; then
+                                print_error "AI extraction produced conversational output instead of extracted content"
+                                return 1
+                            fi
+                            
+                            # Check for proper PROJECT-SPECIFIC-CLAUDE.md format
+                            if grep -q "^# \|^## \|PROJECT-SPECIFIC" PROJECT-SPECIFIC-CLAUDE.md.extracted && \
+                               [ $(wc -l < PROJECT-SPECIFIC-CLAUDE.md.extracted) -gt 10 ]; then
+                                sections=$(grep -c "^## " PROJECT-SPECIFIC-CLAUDE.md.extracted)
+                                lines=$(wc -l < PROJECT-SPECIFIC-CLAUDE.md.extracted)
+                                print_status "Extracted ${sections} sections with ${lines} lines of customizations"
+                            else
+                                print_error "AI extraction did not produce proper PROJECT-SPECIFIC-CLAUDE.md format"
+                                return 1
+                            fi
+                        else
+                            print_error "AI extraction failed or produced empty results"
+                            return 1
+                        fi
+                        
+                        # AI extraction completed successfully - continue to preview
+                        if true; then
                             # Show preview of extracted content
                             print_status "AI extraction completed! Here's a preview:"
                             echo ""
