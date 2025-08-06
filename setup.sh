@@ -63,6 +63,116 @@ progress_bar() {
     # Progress pattern examples: [1/8] [2/8] [3/8] etc.
 }
 
+# AI Extraction function with progress and fallback
+perform_ai_extraction() {
+    local backup_file=$1
+    
+    # Step 5.2: AI extraction with integrated progress
+    print_substep "2" "AI extracting project-specific content"
+    start_time=$(date +%s)
+    
+    # Start Claude Code extraction in background
+    cat "$backup_file" | claude -p "/extract-customizations" > PROJECT-SPECIFIC-CLAUDE.md.extracted 2>/dev/null &
+    claude_pid=$!
+    
+    # Show progress using integrated system
+    while kill -0 "$claude_pid" 2>/dev/null; do
+        update_substep_progress "2" "AI extracting project-specific content" "$start_time"
+        sleep 1
+    done
+    
+    # Wait for completion and check status
+    wait $claude_pid
+    claude_exit_code=$?
+    
+    if [ $claude_exit_code -ne 0 ]; then
+        echo ""
+        print_error "Claude Code command failed (exit code: $claude_exit_code)"
+        return 1
+    fi
+    
+    complete_substep "2" "AI extracting project-specific content" "$start_time"
+    
+    # Step 5.3: Validate extraction quality
+    print_substep "3" "Validating extracted customizations"
+    
+    if [ ! -f "PROJECT-SPECIFIC-CLAUDE.md.extracted" ] || [ ! -s "PROJECT-SPECIFIC-CLAUDE.md.extracted" ]; then
+        print_error "AI extraction failed or produced empty results"
+        return 2
+    fi
+    
+    # Enhanced validation to detect conversational responses vs actual extracted content
+    if grep -q "I've extracted the customizations\|I understand you need to extract\|Would you like me to help\|Let me help you\|I can see it contains\|Choose migration method\|I'll help\|Here's what I've identified\|These appear to be\|Key Customizations:" PROJECT-SPECIFIC-CLAUDE.md.extracted; then
+        print_error "AI extraction produced conversational output instead of extracted content"
+        print_info "The AI provided a summary rather than the actual PROJECT-SPECIFIC-CLAUDE.md format"
+        return 3
+    fi
+    
+    # Check for proper PROJECT-SPECIFIC-CLAUDE.md format
+    if grep -q "^# \|^## \|PROJECT-SPECIFIC" PROJECT-SPECIFIC-CLAUDE.md.extracted && \
+       [ $(wc -l < PROJECT-SPECIFIC-CLAUDE.md.extracted) -gt 10 ]; then
+        sections=$(grep -c "^## " PROJECT-SPECIFIC-CLAUDE.md.extracted)
+        lines=$(wc -l < PROJECT-SPECIFIC-CLAUDE.md.extracted)
+        print_status "Extracted ${sections} sections with ${lines} lines of customizations"
+        return 0
+    else
+        print_error "AI extraction did not produce proper PROJECT-SPECIFIC-CLAUDE.md format"
+        return 4
+    fi
+}
+
+# Fallback options for failed AI extraction
+handle_extraction_fallback() {
+    local backup_file=$1
+    local extraction_error=$2
+    
+    echo ""
+    print_warning "AI-powered extraction encountered issues"
+    
+    case $extraction_error in
+        1) print_info "Claude Code command failed to execute" ;;
+        2) print_info "No output was generated" ;;
+        3) print_info "AI provided summary instead of actual content" ;;  
+        4) print_info "Output format was not valid PROJECT-SPECIFIC-CLAUDE.md" ;;
+        *) print_info "Unknown extraction error" ;;
+    esac
+    
+    echo ""
+    echo "Available fallback options:"
+    echo "  [1] Retry AI extraction (recommended)" 
+    echo "  [2] Create empty PROJECT-SPECIFIC-CLAUDE.md template for manual completion"
+    echo "  [3] Skip customization migration (use template defaults only)"
+    echo ""
+    
+    if [ -t 0 ]; then
+        read -p "Select option (1-3) [1]: " fallback_choice
+        fallback_choice=${fallback_choice:-1}
+    else
+        print_info "Non-interactive mode: using template fallback (option 2)"
+        fallback_choice=2
+    fi
+    
+    case $fallback_choice in
+        1)
+            print_info "Retrying AI extraction..."
+            perform_ai_extraction "$backup_file"
+            return $?
+            ;;
+        2)
+            print_info "Creating PROJECT-SPECIFIC-CLAUDE.md template for manual completion..."
+            return 5  # Special code for template fallback
+            ;;
+        3)
+            print_info "Skipping customization migration..."
+            return 6  # Special code for skip migration
+            ;;
+        *)
+            print_warning "Invalid choice, defaulting to template creation"
+            return 5
+            ;;
+    esac
+}
+
 # Enhanced print functions
 print_step() {
     CURRENT_STEP=$((CURRENT_STEP + 1))
@@ -503,55 +613,41 @@ if [ -f "CLAUDE.md" ]; then
                             print_info "File size: ${file_size} bytes (${line_count} lines)"
                         fi
                         
-                        # Step 5.2: AI extraction with integrated progress
-                        print_substep "2" "AI extracting project-specific content"
-                        start_time=$(date +%s)
+                        # Attempt AI extraction with fallback handling
+                        perform_ai_extraction "$BACKUP_FILE"
+                        extraction_result=$?
                         
-                        # Start Claude Code extraction in background
-                        cat "$BACKUP_FILE" | claude -p "/extract-customizations" > PROJECT-SPECIFIC-CLAUDE.md.extracted 2>/dev/null &
-                        claude_pid=$!
-                        
-                        # Show progress using integrated system
-                        while kill -0 "$claude_pid" 2>/dev/null; do
-                            update_substep_progress "2" "AI extracting project-specific content" "$start_time"
-                            sleep 1
-                        done
-                        
-                        # Wait for completion and check status
-                        wait $claude_pid
-                        claude_exit_code=$?
-                        
-                        if [ $claude_exit_code -ne 0 ]; then
-                            echo ""
-                            print_error "AI extraction failed"
-                            return 1
-                        fi
-                        
-                        complete_substep "2" "AI extracting project-specific content" "$start_time"
-                        
-                        # Step 5.3: Validate extraction quality
-                        print_substep "3" "Validating extracted customizations"
-                        
-                        if [ -f "PROJECT-SPECIFIC-CLAUDE.md.extracted" ] && [ -s "PROJECT-SPECIFIC-CLAUDE.md.extracted" ]; then
-                            # Enhanced validation to detect conversational responses
-                            if grep -q "I understand you need to extract\|Would you like me to help\|Let me help you\|I can see it contains\|Choose migration method\|I'll help\|Here's what I've identified" PROJECT-SPECIFIC-CLAUDE.md.extracted; then
-                                print_error "AI extraction produced conversational output instead of extracted content"
-                                return 1
-                            fi
+                        # Handle extraction failures with graceful fallback
+                        if [ $extraction_result -ne 0 ]; then
+                            handle_extraction_fallback "$BACKUP_FILE" "$extraction_result"
+                            fallback_result=$?
                             
-                            # Check for proper PROJECT-SPECIFIC-CLAUDE.md format
-                            if grep -q "^# \|^## \|PROJECT-SPECIFIC" PROJECT-SPECIFIC-CLAUDE.md.extracted && \
-                               [ $(wc -l < PROJECT-SPECIFIC-CLAUDE.md.extracted) -gt 10 ]; then
-                                sections=$(grep -c "^## " PROJECT-SPECIFIC-CLAUDE.md.extracted)
-                                lines=$(wc -l < PROJECT-SPECIFIC-CLAUDE.md.extracted)
-                                print_status "Extracted ${sections} sections with ${lines} lines of customizations"
-                            else
-                                print_error "AI extraction did not produce proper PROJECT-SPECIFIC-CLAUDE.md format"
-                                return 1
-                            fi
-                        else
-                            print_error "AI extraction failed or produced empty results"
-                            return 1
+                            # Handle fallback outcomes
+                            case $fallback_result in
+                                0)
+                                    # Retry succeeded
+                                    print_status "AI extraction retry completed successfully"
+                                    ;;
+                                5)
+                                    # Template fallback - create empty template
+                                    if download_with_retry "https://raw.githubusercontent.com/b4lisong/claude-code-template/main/PROJECT-SPECIFIC-CLAUDE.md" "PROJECT-SPECIFIC-CLAUDE.md"; then
+                                        print_status "Created PROJECT-SPECIFIC-CLAUDE.md template for manual completion"
+                                        print_info "Please customize PROJECT-SPECIFIC-CLAUDE.md with your project-specific settings"
+                                    else
+                                        print_error "Failed to download template - manual setup required"
+                                    fi
+                                    # Skip to end of extraction handling
+                                    ;;
+                                6)
+                                    # Skip migration - continue without PROJECT-SPECIFIC-CLAUDE.md
+                                    print_status "Customization migration skipped - using template defaults"
+                                    ;;
+                                *)
+                                    # All fallback options failed
+                                    print_error "All extraction and fallback options failed"
+                                    print_info "Continuing with template-only setup..."
+                                    ;;
+                            esac
                         fi
                         
                         # AI extraction completed successfully - continue to preview

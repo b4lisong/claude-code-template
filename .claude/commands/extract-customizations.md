@@ -23,19 +23,54 @@ When you run this command, I will:
 3. **Extract project-specific content** using natural language understanding
 4. **Generate** a properly formatted PROJECT-SPECIFIC-CLAUDE.md file
 
-**CRITICAL EXECUTION REQUIREMENT:**
+**CRITICAL EXECUTION REQUIREMENT - READ CAREFULLY:**
 
-When this command is executed, I MUST immediately output the complete PROJECT-SPECIFIC-CLAUDE.md file content with the extracted customizations. I must NOT provide any conversational responses, explanations, or descriptions.
+I MUST output ONLY the raw PROJECT-SPECIFIC-CLAUDE.md file content. NO OTHER TEXT.
 
-The output MUST start immediately with the markdown content in this exact format:
+**FORBIDDEN OUTPUTS:**
+- ❌ "I've extracted the customizations from your CLAUDE.md file"
+- ❌ "These appear to be project-specific additions"  
+- ❌ "Key Customizations:"
+- ❌ ANY summaries, descriptions, or analysis
+- ❌ ANY conversational responses whatsoever
 
+**REQUIRED OUTPUT ONLY:**
+The complete PROJECT-SPECIFIC-CLAUDE.md file that starts with:
 ```
 # Project-Specific Instructions for [Project Name]
 
-[extracted customizations content here]
+This file contains project customizations that override template defaults.
+
+## Language-Specific Quality Rules
+[actual extracted rules here]
+
+## Project Structure  
+[actual extracted structure here]
 ```
 
-I will now analyze the provided CLAUDE.md file and extract the project-specific customizations into the proper PROJECT-SPECIFIC-CLAUDE.md format:
+**EXAMPLE OF CORRECT vs INCORRECT:**
+
+❌ WRONG (what I must NOT do):
+```
+I've extracted the customizations... These appear to be:
+1. Project Context - Specific to cat feeding calculator
+2. Quality Enforcement - Non-optional checkpoints
+```
+
+✅ CORRECT (what I MUST do):
+```
+# Project-Specific Instructions for Cat Food Calculator
+
+This file contains project customizations that override template defaults.
+
+## Language-Specific Quality Rules
+
+### Next.js 14 Requirements:
+- Use app directory structure exclusively
+- Default to server components
+```
+
+**EXECUTION:** I will now extract and output ONLY the raw PROJECT-SPECIFIC-CLAUDE.md content:
 
 ## Critical Implementation Instructions
 
