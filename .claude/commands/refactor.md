@@ -93,6 +93,26 @@ Improve, Simplify, Optimize, Validate. We refactor with purpose, maintain behavi
 
 The `/refactor` command transforms reactive maintenance into proactive code improvement that builds both codebase quality and refactoring skills.
 
+## Integration with Code Analysis Researcher
+
+### **Research-Driven Refactoring:**
+For complex refactoring initiatives, `/refactor` integrates with the **Code Analysis Researcher** agent:
+
+- **Comprehensive Code Analysis**: Agent analyzes code quality and identifies improvement opportunities
+- **Safety Assessment Planning**: Researches test coverage requirements and validation strategies  
+- **Systematic Refactoring Plans**: Creates detailed improvement plans with phase-by-phase guidance
+- **Risk Assessment**: Documents potential challenges and mitigation strategies
+
+**Research Workflow Integration:**
+```bash
+/refactor "complex authentication module"  # May delegate to Code Analysis Researcher
+# Agent creates detailed analysis in /plans/refactoring-analysis/
+# Review research plan and safety assessment
+# Implement refactoring based on systematic plan
+```
+
+All refactoring research plans are saved to `/plans/refactoring-analysis/` directory for review before implementation.
+
 ## The Systematic Process
 
 ## Phase 1: SAFETY NET

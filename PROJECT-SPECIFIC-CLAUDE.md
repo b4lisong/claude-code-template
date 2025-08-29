@@ -59,6 +59,24 @@ Customize this section to match your project's structure.
 
 ## Development Workflow Customizations
 
+### Research-First Development Process
+**IMPORTANT: All sub-agents are researchers who create plans, not implementers:**
+
+```markdown
+**Sub-Agent Research Workflow:**
+- **TDD Research Specialist**: Creates comprehensive testing strategies and plans
+- **Quality Research Analyst**: Analyzes code quality and creates improvement plans  
+- **Strategic Research Architect**: Develops strategic roadmaps and architectural plans
+- **Code Analysis Researcher**: Analyzes code issues and creates refactoring plans
+- **Documentation Research Specialist**: Researches external APIs, libraries, and creates integration guides
+
+**Plan Storage & Review Process:**
+- All research plans saved to `/plans/` directory with organized subdirectories
+- Plan naming convention: `{agent-type}-{description}-{YYYY-MM-DD}.md`
+- Review plans before implementation - agents research, humans implement
+- Plans include comprehensive analysis, methodology, and actionable steps
+```
+
 ### Testing Strategy
 Define your project's testing approach:
 
@@ -74,6 +92,11 @@ Define your project's testing approach:
 - Use `describe` blocks for feature grouping
 - Test file naming: `*.test.ts` or `*.spec.ts`
 - Mock external dependencies consistently
+
+**TDD Research Integration:**
+- Use TDD Research Specialist for complex testing strategy planning
+- Research plans inform implementation approach and testing architecture
+- Plans include test organization, coverage strategy, and validation approaches
 ```
 
 ### Code Review Standards

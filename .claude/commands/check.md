@@ -40,10 +40,12 @@ When you run `/check`, you are REQUIRED to:
 
 **MANDATORY WORKFLOW:**
 1. Run checks → Find issues
-2. IMMEDIATELY spawn agents to fix ALL issues
-3. Re-run checks → Find remaining issues
-4. Fix those too
-5. REPEAT until EVERYTHING passes
+2. For complex quality problems, delegate to Quality Research Analyst agent
+3. Review research plan for systematic issue resolution
+4. IMMEDIATELY fix ALL issues based on research recommendations
+5. Re-run checks → Find remaining issues
+6. Fix those too
+7. REPEAT until EVERYTHING passes
 
 **YOU ARE NOT DONE UNTIL:**
 - All linters pass with zero warnings
@@ -81,14 +83,36 @@ Run `make test` and ensure:
 - [ ] Dependencies are actually used
 - [ ] No circular dependencies
 
+## Integration with Quality Research Analyst
+
+### **Research-Driven Quality Resolution:**
+For complex or systematic quality issues, `/check` integrates with the **Quality Research Analyst** agent:
+
+- **Comprehensive Quality Assessment**: Agent analyzes all quality dimensions and creates detailed reports
+- **Issue Categorization**: Systematically prioritizes problems by impact, effort, and risk
+- **Systematic Remediation Plans**: Creates detailed step-by-step resolution strategies
+- **Root Cause Analysis**: Investigates underlying causes behind quality problems
+
+**Research Workflow Integration:**
+```bash
+/check                                 # Discovers multiple complex quality issues
+# May delegate to Quality Research Analyst for systematic analysis
+# Agent creates detailed plan in /plans/quality-analysis/
+# Review research plan and remediation strategy
+# Implement fixes based on systematic recommendations
+```
+
+All quality analysis plans are saved to `/plans/quality-analysis/` directory.
+
 **Failure Response Protocol:**
 When issues are found:
-1. **IMMEDIATELY SPAWN AGENTS** to fix issues in parallel
-2. **FIX EVERYTHING** - Address EVERY issue, no matter how "minor"
-3. **VERIFY** - Re-run all checks after fixes
-4. **REPEAT** - If new issues found, spawn more agents and fix those too
-5. **NO STOPPING** - Keep working until ALL checks show GREEN
-6. **NO EXCUSES** - Fix it NOW!
+1. **ASSESS COMPLEXITY** - Simple issues: fix immediately; Complex issues: delegate research
+2. **RESEARCH IF NEEDED** - Let Quality Research Analyst create systematic remediation plan
+3. **FIX EVERYTHING** - Address EVERY issue based on research recommendations
+4. **VERIFY** - Re-run all checks after fixes
+5. **REPEAT** - If new issues found, continue systematic resolution
+6. **NO STOPPING** - Keep working until ALL checks show GREEN
+7. **NO EXCUSES** - Fix it NOW!
 
 **Final Verification:**
 The code is ready when:

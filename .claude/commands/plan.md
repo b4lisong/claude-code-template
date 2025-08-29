@@ -31,6 +31,8 @@ After generating the complete roadmap, you MUST save it to a markdown file:
 
 The systematic planning process analyzes requirements, identifies dependencies, and creates actionable roadmaps with clear phases and deliverables.
 
+**IMPORTANT: This command utilizes the Strategic Research Architect agent for comprehensive strategic analysis and roadmap development.**
+
 **Key Planning Principles:**
 - **Incremental Delivery**: Break large initiatives into manageable phases
 - **Risk Assessment**: Identify potential blockers and mitigation strategies  
@@ -141,6 +143,26 @@ The systematic planning process analyzes requirements, identifies dependencies, 
 - Communication and reporting framework
 
 **Learning Objective**: Master resource planning and team coordination strategies
+
+## Strategic Research Architect Integration
+
+### **Research-Driven Strategic Planning:**
+The `/plan` command automatically delegates complex planning tasks to the **Strategic Research Architect** agent:
+
+- **Comprehensive Strategic Research**: Agent conducts thorough analysis of current state and strategic context
+- **Evidence-Based Strategy Development**: Creates strategic recommendations backed by thorough research
+- **Multi-Option Analysis**: Evaluates alternative approaches with detailed trade-off assessment
+- **Risk-Aware Planning**: Comprehensive risk analysis and mitigation strategies
+
+**Research Workflow Integration:**
+```bash
+/plan "microservices migration strategy"   # Delegates to Strategic Research Architect
+# Agent creates comprehensive analysis in /plans/strategic-research/
+# Review strategic research plan and recommendations
+# Execute implementation based on research-driven roadmap
+```
+
+All strategic research plans are automatically saved to `/plans/strategic-research/` directory with detailed analysis, multiple solution options, and implementation guidance.
 
 ## Integration with Other Commands
 

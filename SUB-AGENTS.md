@@ -1,332 +1,306 @@
-# Sub-Agents Guide: Specialized AI for Complex Development Tasks
+# Sub-Agents Guide: Specialized Research AI for Complex Development Analysis
 
-This Claude Code template includes four specialized sub-agents designed to handle complex, multi-step development tasks while maintaining the template's core values: TDD-first development, zero-tolerance quality standards, and systematic learning approaches.
+This Claude Code template includes five specialized research sub-agents designed to analyze complex development challenges and create comprehensive plans while maintaining the template's core values: research-first approach, evidence-based recommendations, and systematic analysis methodologies.
 
-## What Are Sub-Agents?
+## What Are Research Sub-Agents?
 
-Sub-agents are specialized AI assistants that:
-- Operate in separate context windows
-- Have customized system prompts for specific domains
-- Can be configured with specific tool access
-- Proactively delegate tasks based on expertise
-- Coordinate with the main conversation and other agents
+Research sub-agents are specialized AI assistants that:
+- **Analyze and research** rather than implement directly
+- **Create comprehensive plans** saved to `/plans` directory for human execution
+- **Operate in separate context windows** with specialized research prompts
+- **Focus on evidence-based recommendations** backed by thorough analysis
+- **Coordinate research efforts** across multiple domains and expertise areas
+
+**IMPORTANT: All sub-agents are RESEARCHERS, not implementers.** They create detailed research plans that you review and execute.
 
 **Access via:** `/agents` command to open sub-agent management interface
 
-## Template Sub-Agents Overview
+## Template Research Sub-Agents Overview
 
-### 🧪 **TDD-Coach Agent**
-**Purpose:** Specialized test-driven development coach  
-**Expertise:** RED→GREEN→REFACTOR cycle, systematic TDD thinking  
-**Use When:** Complex test design, TDD workflow guidance, building testing skills  
+### 🧪 **TDD Research Specialist Agent**
+**Purpose:** Comprehensive testing strategy research and TDD planning  
+**Research Focus:** Testing patterns, TDD methodologies, quality assurance strategies  
+**Creates Plans For:** Testing strategies, TDD implementation approaches, quality gate design  
 
-### 🔍 **Quality-Enforcer Agent** 
-**Purpose:** Zero-tolerance quality verification and issue resolution  
-**Expertise:** Parallel issue fixing, comprehensive quality checks  
-**Use When:** Quality issues need immediate resolution, pre-commit verification  
+### 🔍 **Quality Research Analyst Agent** 
+**Purpose:** Thorough quality assessment and improvement planning  
+**Research Focus:** Code quality analysis, technical debt assessment, improvement strategies  
+**Creates Plans For:** Quality improvement roadmaps, issue remediation strategies, quality metrics  
 
-### 📋 **Strategic-Planner Agent**
-**Purpose:** Comprehensive project planning and roadmap generation  
-**Expertise:** 5-phase planning methodology, systematic analysis  
-**Use When:** Complex project planning, architectural decisions, roadmap creation  
+### 📋 **Strategic Research Architect Agent**
+**Purpose:** Comprehensive strategic analysis and roadmap development  
+**Research Focus:** System architecture, strategic planning, organizational change  
+**Creates Plans For:** Strategic initiatives, architectural decisions, organizational roadmaps  
 
-### ♻️ **Refactoring-Specialist Agent**
-**Purpose:** Safe, systematic code improvement  
-**Expertise:** Test-covered refactoring, incremental improvements  
-**Use When:** Code quality improvements, architectural refactoring, technical debt reduction  
+### ♻️ **Code Analysis Researcher Agent**
+**Purpose:** Systematic code analysis and refactoring planning  
+**Research Focus:** Code quality assessment, refactoring opportunities, technical debt analysis  
+**Creates Plans For:** Code improvement strategies, refactoring roadmaps, technical debt reduction  
+
+### 📚 **Documentation Research Specialist Agent**
+**Purpose:** External documentation research and context consolidation specialist  
+**Research Focus:** Third-party libraries, APIs, integration patterns, external service documentation  
+**Creates Plans For:** Integration strategies, API reference guides, documentation summaries, implementation patterns  
 
 ---
 
-## Detailed Agent Capabilities
+## Research Workflow Integration
 
-## 🧪 TDD-Coach Agent
+### Research-First Development Process
 
-### **Core Mission**
-Ensures ALL development follows the TDD cycle while building systematic, senior-level TDD thinking skills.
+1. **Problem Identification** - Identify complex challenges requiring specialized research
+2. **Agent Assignment** - Delegate research to appropriate specialized agent
+3. **Comprehensive Analysis** - Agent conducts thorough research and analysis
+4. **Plan Creation** - Agent creates detailed implementation plan with evidence-based recommendations
+5. **Plan Review** - Human reviews research findings and proposed approach
+6. **Implementation Execution** - Human or main Claude implements based on research plan
 
-### **Key Responsibilities**
-- **RED Phase:** Write comprehensive failing tests that define exact behavior
-- **GREEN Phase:** Guide minimal implementation to pass tests  
-- **REFACTOR Phase:** Improve code quality with test safety net
-- **Learning:** Explain the "why" behind every TDD decision
+### Plan Storage and Organization
+
+All research plans are stored in organized `/plans` directory structure:
+
+```
+/plans/
+├── tdd-research/           # TDD Research Specialist plans
+├── quality-analysis/       # Quality Research Analyst plans  
+├── strategic-research/     # Strategic Research Architect plans
+├── refactoring-analysis/   # Code Analysis Researcher plans
+├── documentation-research/ # Documentation Research Specialist plans
+└── templates/             # Plan templates for consistency
+```
+
+**Naming Convention:** `{agent-type}-{description}-{YYYY-MM-DD}.md`
+
+---
+
+## Detailed Agent Research Capabilities
+
+## 🧪 TDD Research Specialist Agent
+
+### **Research Mission**
+Analyzes codebases and creates comprehensive TDD strategies and testing plans through systematic research.
+
+### **Research Specializations**
+- **Testing Strategy Analysis:** Research optimal testing approaches for specific domains and technologies
+- **TDD Pattern Investigation:** Study TDD methodologies and their application to complex features  
+- **Test Architecture Research:** Design comprehensive testing strategies and organization approaches
+- **Quality Gate Planning:** Research validation approaches and success criteria for TDD initiatives
+
+### **Research Outputs**
+- Comprehensive testing strategy plans with evidence-based recommendations
+- TDD implementation roadmaps with phase-by-phase guidance
+- Test coverage analysis and improvement strategies
+- Testing tool evaluation and selection criteria
 
 ### **When to Use**
-```bash
-# Complex feature with multiple test scenarios
-"Use the TDD-Coach agent to design comprehensive tests for this authentication system"
+- Complex feature development requiring comprehensive testing strategy
+- Legacy system testing improvement initiatives
+- TDD adoption planning and organizational change
+- Testing architecture design for new systems
 
-# When TDD workflow is unclear
-"TDD-Coach agent: guide me through testing this payment processing module"
-
-# Building TDD skills
-"TDD-Coach agent: explain why we write tests first for this user management feature"
-```
-
-### **Quality Standards Enforced**
-- Implementation never before tests
-- Tests define behavior, not implementation details
-- Comprehensive coverage of happy path, edge cases, errors
-- Clear, readable tests that serve as documentation
-
-### **Integration Points**
-- **With `/dev`:** Handles complex test design and TDD workflow
-- **With main conversation:** Reports TDD insights and decisions
-- **With other agents:** Ensures refactoring maintains test coverage
+### **Example Research Tasks**
+- "Research optimal TDD approach for authentication system development"
+- "Analyze current test coverage and create improvement strategy"
+- "Investigate testing patterns for microservices architecture"
 
 ---
 
-## 🔍 Quality-Enforcer Agent
+## 🔍 Quality Research Analyst Agent
 
-### **Core Mission**
-Zero tolerance for quality issues - fixes every problem immediately, never just reports them.
+### **Research Mission**
+Conducts thorough quality assessments and creates detailed remediation plans for systematic code improvement.
 
-### **Key Responsibilities**
-- **Comprehensive Detection:** Run all appropriate linters, tests, builds
-- **Immediate Resolution:** Fix every issue found, spawn parallel agents as needed
-- **Continuous Verification:** Re-run checks until everything shows GREEN
-- **Parallel Processing:** Handle multiple issue types simultaneously
+### **Research Specializations**
+- **Code Quality Analysis:** Systematic assessment using static analysis tools and manual inspection
+- **Technical Debt Research:** Quantification and prioritization of improvement opportunities
+- **Quality Metrics Investigation:** Research appropriate quality measurements and benchmarks
+- **Improvement Strategy Planning:** Evidence-based approaches to quality enhancement
+
+### **Research Outputs**
+- Comprehensive quality assessment reports with detailed findings
+- Prioritized improvement roadmaps with effort and impact analysis
+- Quality metrics and measurement strategies
+- Tool configuration and automation recommendations
 
 ### **When to Use**
-```bash
-# When /check finds multiple issues
-"Quality-Enforcer agent: fix all these linting and test issues immediately"
+- Pre-commit quality assessment and improvement planning
+- Technical debt analysis and reduction strategy development
+- Quality process improvement and automation planning
+- Code review and quality gate enhancement initiatives
 
-# Pre-commit quality gates
-"Quality-Enforcer agent: ensure everything passes before commit"
-
-# Parallel issue resolution
-"Spawn Quality-Enforcer to handle these 15 ESLint errors while I work on features"
-```
-
-### **Quality Standards Enforced**
-- ALL forbidden patterns eliminated (no emojis, no Claude attribution)
-- Zero linting warnings across all languages
-- All tests passing consistently
-- Proper error handling for target languages
-- Professional code standards maintained
-
-### **Integration Points**
-- **With `/check`:** Immediately resolves all detected issues
-- **With `/ship`:** Final quality gate before commits
-- **With other agents:** Ensures all agent output meets quality standards
+### **Example Research Tasks**
+- "Analyze code quality issues and create comprehensive improvement plan"
+- "Research quality metrics and measurement approaches for this codebase"
+- "Investigate automated quality checking strategies and tool configuration"
 
 ---
 
-## 📋 Strategic-Planner Agent
+## 📋 Strategic Research Architect Agent
 
-### **Core Mission**
-Transform complex initiatives into systematic, actionable implementation roadmaps using a comprehensive 5-phase methodology.
+### **Research Mission**
+Conducts comprehensive strategic analysis and creates detailed roadmaps for complex initiatives and architectural decisions.
 
-### **Key Responsibilities**
-- **Discovery & Analysis:** Understand current state and requirements
-- **Solution Design:** Create comprehensive technical approach
-- **Phase Planning:** Break into actionable phases with clear deliverables
-- **Implementation Roadmap:** Detailed execution guidance with quality gates
-- **Resource Planning:** Realistic timelines and resource allocation
+### **Research Specializations**
+- **Architectural Analysis:** Research current system architecture and improvement opportunities
+- **Strategic Planning:** Comprehensive analysis using systematic 5-phase research methodology
+- **Technology Research:** Investigation of solution approaches and technology options
+- **Organizational Strategy:** Research change management and adoption strategies
+
+### **Research Outputs**
+- Comprehensive strategic analysis reports with multiple solution options
+- Detailed implementation roadmaps with phase-by-phase execution plans
+- Risk assessment and mitigation strategies based on research findings
+- Resource planning and organizational readiness assessments
 
 ### **When to Use**
-```bash
-# Complex project planning
-"Strategic-Planner agent: create comprehensive roadmap for microservices migration"
+- Complex architectural decisions requiring comprehensive analysis
+- Large-scale system migration or modernization planning
+- Strategic technology adoption and organizational change initiatives
+- Multi-team coordination and project planning requirements
 
-# Architecture decisions
-"Strategic-Planner agent: plan approach for adding real-time features to this system"
-
-# Large feature planning
-"Strategic-Planner agent: break down this e-commerce checkout system implementation"
-```
-
-### **Planning Methodology**
-1. **Phase 1:** Discovery & Analysis → Current state assessment
-2. **Phase 2:** Solution Design → Technical architecture and specifications  
-3. **Phase 3:** Phase Planning → Actionable phases with dependencies
-4. **Phase 4:** Implementation Roadmap → Detailed execution guidance
-5. **Phase 5:** Resource & Timeline Planning → Realistic scheduling
-
-### **Integration Points**
-- **With `/plan`:** Provides comprehensive analysis and roadmaps
-- **With TDD-Coach:** Includes test strategy in all planning
-- **With Quality-Enforcer:** Builds quality gates into every phase
+### **Example Research Tasks**
+- "Research microservices migration strategy and create comprehensive roadmap"
+- "Analyze system architecture and investigate performance improvement approaches"
+- "Research API modernization strategies and organizational impact assessment"
 
 ---
 
-## ♻️ Refactoring-Specialist Agent
+## ♻️ Code Analysis Researcher Agent
 
-### **Core Mission**
-Systematically improve code quality while maintaining absolute safety through comprehensive test coverage and incremental changes.
+### **Research Mission**
+Systematically analyzes code quality and creates comprehensive refactoring plans with detailed safety assessments.
 
-### **Key Responsibilities**
-- **Safety Assessment:** Verify test coverage before ANY refactoring
-- **Incremental Improvement:** Apply changes step-by-step with continuous validation
-- **Quality Enhancement:** Improve readability, maintainability, performance
-- **Behavior Preservation:** Ensure identical functionality throughout process
+### **Research Specializations**
+- **Code Quality Analysis:** Systematic identification of improvement opportunities and anti-patterns
+- **Refactoring Strategy Research:** Investigation of safe, incremental improvement approaches
+- **Technical Debt Assessment:** Quantification and prioritization of code improvement opportunities
+- **Safety Assessment Planning:** Research test coverage requirements and validation strategies
+
+### **Research Outputs**
+- Comprehensive code analysis reports with detailed improvement opportunities
+- Systematic refactoring plans with phase-by-phase safety considerations
+- Technical debt quantification and prioritization matrices
+- Safety assessment and validation strategies for code improvements
 
 ### **When to Use**
-```bash
-# Code improvement with safety
-"Refactoring-Specialist agent: safely improve this payment processing module"
+- Code quality improvement initiatives requiring systematic analysis
+- Legacy code modernization and refactoring planning
+- Technical debt reduction strategy development
+- Architecture improvement and code organization initiatives
 
-# Architecture refactoring
-"Refactoring-Specialist agent: extract services from this monolithic controller"
-
-# Technical debt reduction
-"Refactoring-Specialist agent: systematically improve code quality in user module"
-```
-
-### **Safety Protocols**
-1. **Phase 1:** Safety Assessment - verify comprehensive test coverage
-2. **Phase 2:** Incremental Changes - one improvement at a time with test verification  
-3. **Phase 3:** Quality Validation - ensure improvements achieved
-
-### **Integration Points**
-- **With `/refactor`:** Provides safe, systematic code improvement
-- **With TDD-Coach:** Ensures refactoring maintains TDD principles
-- **With Quality-Enforcer:** All refactored code meets quality standards
+### **Example Research Tasks**
+- "Analyze authentication module code quality and create refactoring plan"
+- "Research technical debt in payment processing system and prioritize improvements"
+- "Investigate code organization opportunities and create systematic improvement strategy"
 
 ---
 
-## Multi-Agent Coordination Patterns
+## 📚 Documentation Research Specialist Agent
 
-### **Development Workflow Enhancement**
-```bash
-# Start complex feature development
-/agents
-# Delegate to TDD-Coach for comprehensive test design
-# Use Quality-Enforcer for continuous quality maintenance
-# Strategic-Planner for architectural decisions
-/dev "enterprise authentication system"
-/check  # Quality-Enforcer ensures everything passes
-/ship "add enterprise auth with SSO support"
-```
+### **Research Mission**
+Conducts comprehensive research on external documentation sources and creates consolidated reference materials for third-party integrations.
 
-### **Quality-First Development**
-```bash
-# Parallel quality and development
-/agents
-# TDD-Coach designs tests
-# Quality-Enforcer maintains standards
-# Development proceeds with dual safety nets
-```
+### **Research Specializations**
+- **External Documentation Analysis:** Research GitHub repositories, API specs, and official documentation
+- **Integration Pattern Investigation:** Study third-party library usage patterns and community best practices
+- **Security and Compliance Research:** Investigate security considerations and compliance requirements for external dependencies
+- **Context Consolidation Planning:** Create comprehensive reference documents from multiple authoritative sources
 
-### **Strategic Refactoring**
-```bash
-# Complex refactoring project  
-/agents
-# Strategic-Planner creates refactoring roadmap
-# Refactoring-Specialist executes safely
-# Quality-Enforcer ensures standards maintained
-# TDD-Coach maintains test coverage
-```
+### **Research Outputs**
+- Comprehensive integration strategy plans with evidence-based recommendations
+- API reference consolidations with key endpoints and implementation patterns
+- Security and compliance analysis for external dependencies
+- Version compatibility matrices and upgrade planning guides
 
-## Best Practices for Sub-Agent Usage
+### **When to Use**
+- Third-party library integration planning and research
+- API integration strategy development and documentation consolidation
+- External service integration analysis and security assessment
+- Documentation research for complex integrations requiring multiple sources
 
-### **When to Delegate to Sub-Agents**
-- **Complex Tasks:** Multi-step processes requiring specialized expertise
-- **Parallel Processing:** Multiple independent tasks that can run simultaneously
-- **Specialized Knowledge:** Domain-specific requirements (TDD, quality, planning, refactoring)
-- **Quality Assurance:** Tasks requiring zero-tolerance standards
-- **Learning Opportunities:** Situations where specialized coaching adds value
-
-### **Coordination Strategies**
-- **Clear Task Boundaries:** Define specific responsibilities for each agent
-- **Communication Protocols:** Ensure agents report back key insights
-- **Quality Consistency:** All agents must maintain template quality standards
-- **Learning Integration:** Use agent interactions as learning opportunities
-
-### **Agent Selection Guide**
-- **Need tests designed?** → TDD-Coach Agent
-- **Have quality issues?** → Quality-Enforcer Agent  
-- **Complex planning required?** → Strategic-Planner Agent
-- **Code needs improvement?** → Refactoring-Specialist Agent
-- **Multiple needs?** → Coordinate multiple agents
-
-## Sub-Agent Quality Standards
-
-All sub-agents enforce the template's core quality requirements:
-
-### **Universal Standards**
-- NO emojis in any output or generated content
-- NO Claude attribution in commits or documentation
-- Follow all forbidden patterns from CLAUDE.md
-- Maintain professional output suitable for production
-- Support the template's learning-focused approach
-
-### **Agent-Specific Excellence**
-- **TDD-Coach:** Builds systematic TDD thinking skills
-- **Quality-Enforcer:** Achieves zero-tolerance quality standards
-- **Strategic-Planner:** Creates actionable, realistic roadmaps
-- **Refactoring-Specialist:** Ensures behavior preservation during improvement
-
-## Getting Started with Sub-Agents
-
-### **Step 1: Access Sub-Agents**
-```bash
-/agents  # Opens sub-agent management interface
-```
-
-### **Step 2: Understand Available Agents**
-Review the four template agents and their specializations:
-- TDD-Coach for test-driven development
-- Quality-Enforcer for issue resolution  
-- Strategic-Planner for comprehensive planning
-- Refactoring-Specialist for safe code improvement
-
-### **Step 3: Strategic Delegation**
-Choose agents based on task complexity and domain requirements:
-- Simple tasks → Main conversation
-- Complex specialized tasks → Appropriate sub-agent
-- Multi-faceted problems → Coordinate multiple agents
-
-### **Step 4: Monitor and Learn**
-- Pay attention to agent reasoning and decisions
-- Use agent interactions as learning opportunities
-- Build understanding of when to delegate vs. handle directly
-
-## Advanced Usage Patterns
-
-### **Multi-Agent Project Workflow**
-```bash
-# Phase 1: Strategic Planning
-Strategic-Planner agent: "Create comprehensive roadmap for user management system"
-
-# Phase 2: TDD Implementation  
-TDD-Coach agent: "Design tests for user registration, authentication, and profile management"
-
-# Phase 3: Quality Assurance
-Quality-Enforcer agent: "Ensure all code meets production standards"
-
-# Phase 4: Code Improvement
-Refactoring-Specialist agent: "Optimize user service architecture"
-```
-
-### **Continuous Quality Development**
-```bash
-# Ongoing quality partnership
-Quality-Enforcer agent: "Monitor and fix issues as they arise"
-TDD-Coach agent: "Maintain test-first approach throughout development"
-# Main conversation handles feature logic with specialist support
-```
-
-### **Learning-Accelerated Development**
-```bash
-# Use agents as teachers
-TDD-Coach agent: "Explain TDD decisions while implementing authentication"
-Refactoring-Specialist agent: "Show me refactoring patterns while improving code quality"
-Strategic-Planner agent: "Teach planning methodology while creating roadmaps"
-```
+### **Example Research Tasks**
+- "Research Stripe API integration patterns and create comprehensive implementation guide"
+- "Analyze React Router v6 documentation and create migration strategy from v5"
+- "Research AWS SDK security best practices and create integration compliance plan"
 
 ---
 
-## Conclusion
+## Advanced Research Coordination Patterns
 
-The template's sub-agents transform individual development into coordinated team development, with each agent bringing specialized expertise while maintaining the template's core values:
+### **Multi-Agent Research Collaboration**
 
-- **TDD-first philosophy** preserved and enhanced
-- **Quality standards** enforced across all agents
-- **Professional output** maintained in all interactions
-- **Learning opportunities** multiplied through specialized coaching
-- **Systematic approaches** applied to complex problems
+For complex initiatives requiring multiple research perspectives:
 
-Use sub-agents strategically to handle complexity while building your own systematic thinking skills. The goal is not dependency on AI agents, but leveraging them to become a better, more systematic developer yourself.
+1. **Strategic Research Architect** - Provides high-level strategic analysis and roadmap
+2. **Documentation Research Specialist** - Researches external dependencies and integration requirements
+3. **TDD Research Specialist** - Develops testing strategy aligned with strategic goals and external integrations
+4. **Quality Research Analyst** - Assesses quality requirements and improvement needs
+5. **Code Analysis Researcher** - Analyzes implementation challenges and technical constraints
 
-**Remember:** Sub-agents are tools to enhance your capabilities and accelerate your learning, not replace your thinking. Use them wisely to build senior-level development skills while maintaining the template's commitment to quality and systematic approaches.
+### **Research Workflow Examples**
+
+#### **Example: Microservices Migration Research**
+1. **Strategic Research Architect**: Analyze migration strategy, technology options, organizational impact
+2. **Documentation Research Specialist**: Research microservices frameworks, container orchestration, and API gateway documentation
+3. **Code Analysis Researcher**: Assess current codebase and identify refactoring requirements  
+4. **TDD Research Specialist**: Design testing strategy for microservices architecture
+5. **Quality Research Analyst**: Research quality gates and validation approaches
+
+#### **Example: Third-Party API Integration Research**
+1. **Documentation Research Specialist**: Comprehensive API documentation analysis and integration pattern research
+2. **Strategic Research Architect**: Integration architecture strategy and organizational impact assessment
+3. **Quality Research Analyst**: API integration quality standards and monitoring strategy
+4. **TDD Research Specialist**: API testing strategy and mock service planning
+
+#### **Example: Legacy System Modernization Research**
+1. **Code Analysis Researcher**: Comprehensive legacy code analysis and improvement opportunities
+2. **Strategic Research Architect**: Modernization roadmap with risk assessment and phasing
+3. **Documentation Research Specialist**: Research modern technology stack documentation and migration patterns
+4. **Quality Research Analyst**: Quality improvement strategy aligned with modernization goals
+5. **TDD Research Specialist**: Testing strategy for legacy system improvement and validation
+
+---
+
+## Research Quality Standards
+
+### **All Research Plans Must Include:**
+- **Executive Summary** - High-level findings and key recommendations
+- **Research Methodology** - How analysis was conducted and information sources
+- **Current State Analysis** - Comprehensive assessment of existing situation
+- **Evidence-Based Recommendations** - Specific suggestions backed by research findings
+- **Implementation Guidance** - Clear, actionable steps for human execution
+- **Success Criteria** - Measurable outcomes and validation approaches
+- **Risk Assessment** - Potential challenges and mitigation strategies
+
+### **Professional Standards:**
+- **NO emojis** in any research output or plans
+- **NO Claude attribution** in research documentation  
+- **Professional tone** suitable for technical and executive stakeholder consumption
+- **Evidence-based approach** with clear rationale for all recommendations
+- **Comprehensive coverage** ensuring no critical aspects are overlooked
+
+---
+
+## Integration with Development Workflow
+
+### **Research-Driven Development Process**
+
+1. **Challenge Identification** - Recognize complex problems requiring specialized research
+2. **Research Agent Assignment** - Delegate to appropriate specialized research agent
+3. **Comprehensive Analysis** - Agent conducts thorough investigation and analysis
+4. **Plan Creation and Documentation** - Evidence-based implementation plan with detailed guidance
+5. **Plan Review and Validation** - Human review of research findings and recommendations
+6. **Implementation Execution** - Human or main Claude implements based on research plan
+7. **Results Validation** - Verify outcomes match research predictions and success criteria
+
+### **Benefits of Research-First Approach**
+
+- **Better Decision Making** - Comprehensive analysis before implementation
+- **Risk Mitigation** - Issues identified and addressed during research phase
+- **Knowledge Preservation** - All analysis and reasoning documented for future reference
+- **Team Collaboration** - Plans can be reviewed, shared, and improved by multiple team members
+- **Quality Assurance** - Evidence-based approach ensures well-founded implementation decisions
+
+---
+
+Remember: These research sub-agents are your specialized analytical partners. They don't implement solutions - they conduct thorough research, analyze complex challenges, and create comprehensive plans that enable you to make informed decisions and execute with confidence.

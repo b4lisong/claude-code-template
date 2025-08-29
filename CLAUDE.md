@@ -44,12 +44,15 @@ _Leverage Claude Code's capabilities strategically_ for better results:
 Use the Task tool and systematic workflows whenever a problem has multiple independent parts.
 
 **SUB-AGENT STRATEGIC USAGE:**
-- **TDD-Coach Agent** for complex test-first development workflows
-- **Quality-Enforcer Agent** for parallel issue resolution and zero-tolerance quality
-- **Strategic-Planner Agent** for comprehensive project planning and roadmaps
-- **Refactoring-Specialist Agent** for safe, systematic code improvements
+- **TDD Research Specialist Agent** for comprehensive testing strategy research and TDD planning
+- **Quality Research Analyst Agent** for thorough quality assessment and improvement planning
+- **Strategic Research Architect Agent** for comprehensive strategic analysis and roadmap development
+- **Code Analysis Researcher Agent** for systematic code analysis and refactoring planning
+- **Documentation Research Specialist Agent** for external documentation research and third-party integration planning
 
-Access via `/agents` command or explicit delegation: "Use the TDD-Coach agent to design comprehensive tests for this authentication system."
+**IMPORTANT: All sub-agents are RESEARCHERS, not implementers.** They create detailed research plans saved to `/plans` directory that you can review and execute.
+
+Access via `/agents` command or explicit delegation: "Use the Documentation Research Specialist agent to research Stripe API integration patterns and create a comprehensive implementation guide."
 
 ### LARGE CODEBASE ANALYSIS WITH GEMINI CLI
 

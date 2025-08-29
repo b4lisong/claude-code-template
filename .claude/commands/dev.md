@@ -257,6 +257,26 @@ AI: "All payment tests are green - perfect for refactoring!
      I'll make these changes incrementally, running tests after each step to ensure we don't break anything..."
 ```
 
+## Integration with Research Agents
+
+### **Research-Driven TDD Development:**
+When `/dev` encounters complex requirements, it may delegate research to specialized agents:
+
+- **TDD Research Specialist**: Creates comprehensive testing strategies and TDD plans
+- **Quality Research Analyst**: Analyzes code quality and creates improvement plans  
+- **Strategic Research Architect**: Develops strategic roadmaps for complex features
+- **Code Analysis Researcher**: Analyzes existing code and creates refactoring plans
+
+**Research Workflow Integration:**
+```bash
+/dev "complex authentication system"   # May delegate to TDD Research Specialist
+# Agent creates detailed plan in /plans/tdd-research/
+# Review research plan before implementation
+# Implement based on research findings and recommendations
+```
+
+All research plans are saved to `/plans` directory for review before implementation.
+
 ## Integration with Other Commands
 
 ### **TDD-First Quality Pipeline:**

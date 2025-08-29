@@ -142,13 +142,19 @@ Quick reference for all available Claude Code commands in this template.
 - Formats for LLM consumption
 
 ### `/agents`
-**Purpose:** Manage specialized sub-agents for complex tasks  
-**Example:** `/agents` (opens sub-agent interface)  
+**Purpose:** Manage specialized research sub-agents for complex analysis and planning tasks  
+**Example:** `/agents` (opens research sub-agent interface)  
 **What it does:**
-- Create and configure specialized sub-agents
-- Delegate complex tasks to focused agents
-- Coordinate multi-agent workflows
-- Access template-specific agents (TDD-Coach, Quality-Enforcer, Strategic-Planner, Refactoring-Specialist)
+- Access specialized research agents for comprehensive analysis
+- Delegate complex research tasks to focused agents
+- Generate detailed research plans saved to `/plans` directory
+- Available research agents: TDD Research Specialist, Quality Research Analyst, Strategic Research Architect, Code Analysis Researcher, Documentation Research Specialist
+
+**Research Workflow:**
+- Agents analyze and research rather than implement directly
+- All research outputs saved to organized `/plans/` directory
+- Review research plans before implementation
+- Implement based on evidence-based recommendations
 
 ## 📁 Two-File Instruction System
 
@@ -199,13 +205,18 @@ The template uses a dual-file system for safe template updates:
 /ship "refactor: component" # Commit improvements
 ```
 
-### Sub-Agent Workflow Examples
+### Research Sub-Agent Workflow Examples
 ```
-/agents                    # Open sub-agent interface
-# Use TDD-Coach for complex test design
-# Use Quality-Enforcer for parallel issue fixing  
-# Use Strategic-Planner for comprehensive roadmaps
-# Use Refactoring-Specialist for safe code improvements
+/agents                    # Open research sub-agent interface
+# Use TDD Research Specialist for testing strategy research
+# Use Quality Research Analyst for quality assessment and improvement planning
+# Use Strategic Research Architect for comprehensive strategic roadmaps
+# Use Code Analysis Researcher for code analysis and refactoring planning
+# Use Documentation Research Specialist for external API/library research
+
+# Example workflow:
+/agents -> TDD Research Specialist -> creates plan in /plans/tdd-research/
+# Review research plan before implementing based on recommendations
 ```
 
 ### Template Update Workflows
@@ -256,7 +267,7 @@ claude
 7. **Run `/claude-md backup`** - Before major instruction changes
 8. **Update `/claude-md update-mastery`** - Weekly learning progress tracking
 9. **Review backup files carefully** - Ensure all customizations are migrated
-10. **Use `/agents` for complex tasks** - Delegate to specialized sub-agents
+10. **Use `/agents` for complex analysis** - Delegate research to specialized sub-agents (including external documentation research) who create detailed plans in `/plans` directory
 
 ## 🚫 Command Guidelines
 

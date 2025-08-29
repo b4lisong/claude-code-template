@@ -141,7 +141,27 @@ Comprehensive help and guidance for the Claude Code Template command system and 
 - `/debug` and `/refactor` for systematic improvement workflows
 - `/check` and `/ship` for quality gates and professional commits
 
-**Remember**: This system is designed to build senior-level development skills through systematic, test-driven workflows. Every command reinforces best practices and quality standards.
+## Research Agent Integration
+
+### **Specialized Research Agents:**
+The template includes four research-focused sub-agents for complex analysis and planning:
+
+- **TDD Research Specialist**: Creates comprehensive testing strategies and TDD plans  
+- **Quality Research Analyst**: Analyzes code quality and creates improvement plans
+- **Strategic Research Architect**: Develops strategic roadmaps and architectural plans
+- **Code Analysis Researcher**: Analyzes code issues and creates refactoring plans
+
+**Research Workflow:**
+```bash
+/agents                                # Access research agent interface
+# Agents create detailed plans in /plans directory
+# Review research plans before implementation
+# Implement based on evidence-based recommendations
+```
+
+All research plans are saved to organized `/plans` directory with comprehensive analysis and actionable guidance.
+
+**Remember**: This system is designed to build senior-level development skills through systematic, test-driven workflows enhanced by research-driven planning. Every command reinforces best practices and quality standards.
 ## Integration with Other Commands
 
 
