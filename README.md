@@ -22,6 +22,12 @@ A production-ready Claude Code template that transforms your development workflo
 curl -H 'Cache-Control: no-cache' -sL https://raw.githubusercontent.com/b4lisong/claude-code-template/main/setup.sh | bash
 ```
 
+**For existing projects, use submodule installation instead:**
+```bash
+git submodule add https://github.com/b4lisong/claude-code-template.git claude-code-template
+cd claude-code-template && ./setup.sh --submodule
+```
+
 **Then start coding:**
 ```bash
 claude                                # Start Claude Code
@@ -142,6 +148,41 @@ Agentic workflow:
 ```bash
 # Preserves your existing project customizations
 curl -H 'Cache-Control: no-cache' -sL https://raw.githubusercontent.com/b4lisong/claude-code-template/main/setup.sh | bash
+```
+
+### Submodule Installation
+**Add Claude Code template as a submodule to your existing project:**
+
+```bash
+# Add template as submodule
+git submodule add https://github.com/b4lisong/claude-code-template.git claude-code-template
+
+# Initialize and update submodule
+git submodule update --init --recursive
+
+# Run submodule installation (creates symbolic links in parent directory)
+cd claude-code-template
+./setup.sh --submodule
+
+# Start using Claude Code from your project root
+cd ..
+claude
+```
+
+**What the submodule setup does:**
+- ✅ **Creates symbolic links** in your project root: `CLAUDE.md`, `PROJECT-SPECIFIC-CLAUDE.md`, `.claude/`
+- ✅ **Installs git hooks** in your main repository for quality enforcement
+- ✅ **Preserves your existing files** with automatic backup
+- ✅ **Updates your .gitignore** with backup exclusion patterns
+- ✅ **Works from your project root** - all Claude Code commands function normally
+
+**Auto-detection:** The script automatically detects when you're in a `claude-code-template` submodule and prompts for submodule installation.
+
+**Manual options:**
+```bash
+./setup.sh --submodule                    # Use parent directory (..)
+./setup.sh --submodule --parent-dir ../.. # Custom parent directory
+./setup.sh --help                         # Show all options
 ```
 
 ### Project Customization

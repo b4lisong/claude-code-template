@@ -3,8 +3,53 @@
 # Enhanced Claude Code Setup Script with Progress Indicators & Error Feedback
 # Works with curl | bash - no external dependencies
 # Addresses Phase 1 UX Research findings: setup success rate improvement
+# Supports submodule installation with symbolic links
 
 set -e  # Exit on any error
+
+# Command line options
+SUBMODULE_MODE=false
+PARENT_DIR=""
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --submodule)
+            SUBMODULE_MODE=true
+            shift
+            ;;
+        --parent-dir)
+            PARENT_DIR="$2"
+            shift 2
+            ;;
+        --help|-h)
+            echo "Claude Code Setup Script"
+            echo ""
+            echo "Usage: $0 [options]"
+            echo ""
+            echo "Options:"
+            echo "  --submodule         Install as submodule with symbolic links to parent directory"
+            echo "  --parent-dir DIR    Specify parent directory for symbolic links (default: ..)"
+            echo "  --help, -h          Show this help message"
+            echo ""
+            echo "Submodule Installation:"
+            echo "  When used as a git submodule, this script can create symbolic links"
+            echo "  in the parent directory to make Claude Code files accessible."
+            echo ""
+            echo "Example:"
+            echo "  # Add as submodule to existing project"
+            echo "  git submodule add https://github.com/b4lisong/claude-code-template.git claude-code-template"
+            echo "  cd claude-code-template"
+            echo "  ./setup.sh --submodule"
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo "Use --help for usage information"
+            exit 1
+            ;;
+    esac
+done
 
 # Colors and visual elements (default to enabled, opt-out with NO_COLOR)
 if [ "${NO_COLOR:-}" != "true" ] && [ "${TERM:-}" != "dumb" ]; then
@@ -157,6 +202,36 @@ cleanup() {
 
 # Trap signals for graceful handling
 trap cleanup INT TERM
+
+# Auto-detect submodule mode if not explicitly set
+detect_submodule_context() {
+    if [ "$SUBMODULE_MODE" = false ]; then
+        # Check if we're in a directory named "claude-code-template" with a parent directory
+        current_dir=$(basename "$(pwd)")
+        if [ "$current_dir" = "claude-code-template" ] && [ -d ".." ]; then
+            # Check if this is a git submodule (has .git file, not directory)
+            if [ -f ".git" ] && [ ! -d ".git" ]; then
+                print_info "Auto-detected submodule installation context"
+                # Check if running in interactive mode (TTY available)
+                if [ -t 0 ]; then
+                    read -p "Install as submodule with symbolic links? (Y/n): " confirm
+                    if [[ ! $confirm =~ ^[Nn]$ ]]; then
+                        SUBMODULE_MODE=true
+                        print_status "Switched to submodule installation mode"
+                    fi
+                else
+                    # Non-interactive mode - don't assume submodule mode
+                    print_info "Non-interactive mode: use --submodule flag to enable submodule installation"
+                fi
+            fi
+        fi
+    fi
+
+    # Set default parent directory for submodule mode
+    if [ "$SUBMODULE_MODE" = true ] && [ -z "$PARENT_DIR" ]; then
+        PARENT_DIR=".."
+    fi
+}
 
 # Validation functions
 validate_environment() {
@@ -383,6 +458,206 @@ validate_download() {
     return 0
 }
 
+# Submodule installation function
+install_as_submodule() {
+    local parent_dir="$1"
+    
+    print_step "Installing as submodule with symbolic links"
+    
+    # Validate parent directory
+    if [ ! -d "$parent_dir" ]; then
+        print_error "Parent directory does not exist: $parent_dir"
+        exit 1
+    fi
+    
+    if [ ! -w "$parent_dir" ]; then
+        print_error "Parent directory is not writable: $parent_dir"
+        exit 1
+    fi
+    
+    # Create backup directory in parent for safety
+    local backup_dir="$parent_dir/claude-backup-submodule-$(date +%Y%m%d-%H%M%S)"
+    mkdir -p "$backup_dir"
+    print_status "Created backup directory: $backup_dir"
+    
+    # Files to link to parent directory
+    local files_to_link=("CLAUDE.md" "PROJECT-SPECIFIC-CLAUDE.md")
+    local dirs_to_link=(".claude")
+    
+    # Handle file linking with backup
+    for file in "${files_to_link[@]}"; do
+        local target_file="$parent_dir/$file"
+        local source_file="$(pwd)/$file"
+        
+        # Create backup if target exists
+        if [ -e "$target_file" ]; then
+            print_info "Backing up existing $file"
+            cp -r "$target_file" "$backup_dir/"
+        fi
+        
+        # Remove existing file/link
+        [ -e "$target_file" ] && rm -f "$target_file"
+        
+        # Create symbolic link if source exists
+        if [ -f "$source_file" ]; then
+            if ln -s "claude-code-template/$file" "$target_file"; then
+                print_status "Linked $file → $target_file"
+            else
+                print_error "Failed to create symbolic link for $file"
+                return 1
+            fi
+        else
+            print_warning "Source file does not exist: $source_file"
+        fi
+    done
+    
+    # Handle directory linking with backup
+    for dir in "${dirs_to_link[@]}"; do
+        local target_dir="$parent_dir/$dir"
+        local source_dir="$(pwd)/$dir"
+        
+        # Create backup if target exists
+        if [ -e "$target_dir" ]; then
+            print_info "Backing up existing $dir directory"
+            cp -r "$target_dir" "$backup_dir/"
+        fi
+        
+        # Remove existing directory/link
+        [ -e "$target_dir" ] && rm -rf "$target_dir"
+        
+        # Create symbolic link if source exists
+        if [ -d "$source_dir" ]; then
+            if ln -s "claude-code-template/$dir" "$target_dir"; then
+                print_status "Linked directory $dir → $target_dir"
+            else
+                print_error "Failed to create symbolic link for directory $dir"
+                return 1
+            fi
+        else
+            print_warning "Source directory does not exist: $source_dir"
+        fi
+    done
+    
+    # Handle .gitignore - append entries rather than replace
+    local parent_gitignore="$parent_dir/.gitignore"
+    local gitignore_entries=("claude-backup-*/" "claude-backup-submodule-*/")
+    
+    if [ ! -f "$parent_gitignore" ]; then
+        touch "$parent_gitignore"
+        print_status "Created .gitignore in parent directory"
+    fi
+    
+    for entry in "${gitignore_entries[@]}"; do
+        if ! grep -q "^$entry$" "$parent_gitignore" 2>/dev/null; then
+            echo "$entry" >> "$parent_gitignore"
+            print_status "Added '$entry' to parent .gitignore"
+        fi
+    done
+    
+    return 0
+}
+
+# Install git hooks for parent repository in submodule mode
+install_git_hooks_for_parent() {
+    local parent_dir="$1"
+    local parent_git_hooks="$parent_dir/.git/hooks"
+    
+    print_step "Installing git hooks for parent repository"
+    
+    # Ensure hooks directory exists
+    mkdir -p "$parent_git_hooks"
+    
+    # Create commit-msg hook for parent repository
+    cat > "$parent_git_hooks/commit-msg" << 'EOF'
+#!/usr/bin/env bash
+# commit-msg - Validate commit messages for forbidden patterns
+# (Installed by claude-code-template submodule)
+#
+# This hook enforces the UNIVERSAL FORBIDDEN PATTERNS from CLAUDE.md
+# specifically checking for Claude attribution in commit messages.
+
+commit_msg_file="$1"
+
+# Read the commit message
+commit_msg=$(cat "$commit_msg_file")
+
+# Check for forbidden Claude attribution patterns
+if grep -qiE "(generated with.*claude|co-authored-by.*claude)" "$commit_msg_file"; then
+    echo "ERROR: Commit message contains forbidden Claude attribution"
+    echo "FORBIDDEN PATTERN: Claude attribution in commit messages is not allowed"
+    echo ""
+    echo "Remove any of these patterns:"
+    echo "  - 'Generated with Claude Code'"
+    echo "  - 'Co-Authored-By: Claude'"
+    echo "  - Similar Claude attribution text"
+    echo ""
+    echo "See claude-code-template/CLAUDE.md UNIVERSAL FORBIDDEN PATTERNS for details."
+    exit 1
+fi
+
+# Check for emojis in commit messages (basic pattern matching)
+if grep -qE '[😀-🿿]|[🀀-🯿]' "$commit_msg_file"; then
+    echo "ERROR: Commit message contains emojis"
+    echo "FORBIDDEN PATTERN: No emojis allowed in commit messages"
+    echo ""
+    echo "See claude-code-template/CLAUDE.md UNIVERSAL FORBIDDEN PATTERNS for details."
+    exit 1
+fi
+
+exit 0
+EOF
+    
+    chmod +x "$parent_git_hooks/commit-msg"
+    print_status "Git commit-msg hook installed in parent repository"
+    
+    # Create pre-commit hook for parent repository
+    cat > "$parent_git_hooks/pre-commit" << 'EOF'
+#!/usr/bin/env bash
+# pre-commit - Run quality checks before allowing commits
+# (Installed by claude-code-template submodule)
+#
+# This hook runs the smart-lint.sh quality checker before each commit
+# to ensure all code meets professional standards.
+
+if [ -f "claude-code-template/.claude/hooks/smart-lint.sh" ]; then
+    echo "Running pre-commit quality checks via claude-code-template..."
+    cd claude-code-template && bash .claude/hooks/smart-lint.sh
+    exit_code=$?
+    cd ..
+    if [ $exit_code -ne 0 ]; then
+        echo ""
+        echo "[ERROR] Pre-commit quality checks failed!"
+        echo "Fix all issues above before committing."
+        echo "Run 'cd claude-code-template && bash .claude/hooks/smart-lint.sh' to see details."
+        exit 1
+    fi
+    echo "[OK] Pre-commit quality checks passed!"
+elif [ -f ".claude/hooks/smart-lint.sh" ]; then
+    echo "Running pre-commit quality checks..."
+    bash .claude/hooks/smart-lint.sh
+    exit_code=$?
+    if [ $exit_code -ne 0 ]; then
+        echo ""
+        echo "[ERROR] Pre-commit quality checks failed!"
+        echo "Fix all issues above before committing."
+        echo "Run 'bash .claude/hooks/smart-lint.sh' to see details."
+        exit 1
+    fi
+    echo "[OK] Pre-commit quality checks passed!"
+else
+    echo "[WARN] Warning: smart-lint.sh not found in expected locations"
+    echo "Expected: claude-code-template/.claude/hooks/smart-lint.sh or .claude/hooks/smart-lint.sh"
+fi
+
+exit 0
+EOF
+    
+    chmod +x "$parent_git_hooks/pre-commit"
+    print_status "Git pre-commit hook installed in parent repository"
+    
+    return 0
+}
+
 # Header
 echo -e "${BLUE}Claude Code Enhanced Setup${NC}"
 echo "========================================="
@@ -390,6 +665,49 @@ print_info "Setup takes approximately 30 seconds"
 print_info "Estimated time: ${ESTIMATED_DURATION} seconds"
 print_info "Setting up systematic TDD workflows with progress tracking..."
 echo ""
+
+# Step 0: Detect submodule context and configure installation mode
+detect_submodule_context
+
+# Check if we should run submodule installation instead of regular installation
+if [ "$SUBMODULE_MODE" = true ]; then
+    print_info "Running in submodule installation mode"
+    print_info "Parent directory: $PARENT_DIR"
+    echo ""
+    
+    # Validate environment first
+    validate_environment
+    
+    # Run the submodule-specific installation
+    install_as_submodule "$PARENT_DIR"
+    
+    # Configure git hooks in parent directory if it's a git repo
+    if [ -d "$PARENT_DIR/.git" ]; then
+        install_git_hooks_for_parent "$PARENT_DIR"
+    fi
+    
+    # Success message for submodule installation
+    echo ""
+    print_status "Submodule installation complete!"
+    echo ""
+    echo -e "${GREEN}Submodule Installation Summary:${NC}"
+    echo "  ✓ Created symbolic links in parent directory"
+    echo "  ✓ CLAUDE.md → parent/CLAUDE.md"
+    echo "  ✓ PROJECT-SPECIFIC-CLAUDE.md → parent/PROJECT-SPECIFIC-CLAUDE.md"
+    echo "  ✓ .claude/ → parent/.claude/"
+    echo "  ✓ Updated parent .gitignore"
+    if [ -d "$PARENT_DIR/.git" ]; then
+        echo "  ✓ Installed git hooks in parent repository"
+    fi
+    echo ""
+    echo -e "${BLUE}Next Steps:${NC}"
+    echo -e "  1. Navigate to parent directory: ${GREEN}cd $PARENT_DIR${NC}"
+    echo -e "  2. Start Claude Code: ${GREEN}claude${NC}"
+    echo -e "  3. Try your first TDD feature: ${GREEN}/dev \"user authentication\"${NC}"
+    echo ""
+    print_info "Submodule setup completed successfully!"
+    exit 0
+fi
 
 # Step 1: Environment validation
 validate_environment
