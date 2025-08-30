@@ -1025,8 +1025,10 @@ EOF
 fi
 
 
-# Create web search validation hooks
-cat > .claude/hooks/validate-search-date.py << 'EOF'
+# Create web search validation hooks (only if they don't exist)
+if [ ! -f ".claude/hooks/validate-search-date.py" ]; then
+    print_info "Creating validate-search-date.py hook..."
+    cat > .claude/hooks/validate-search-date.py << 'EOF'
 #!/usr/bin/env python3
 """
 PreToolUse Hook: Validate search queries for current date context
@@ -1063,8 +1065,13 @@ def main():
 if __name__ == '__main__':
     main()
 EOF
+else
+    print_status "Preserving existing validate-search-date.py hook"
+fi
 
-cat > .claude/hooks/validate-search-results.py << 'EOF'
+if [ ! -f ".claude/hooks/validate-search-results.py" ]; then
+    print_info "Creating validate-search-results.py hook..."
+    cat > .claude/hooks/validate-search-results.py << 'EOF'
 #!/usr/bin/env python3
 """
 PostToolUse Hook: Analyze search results for outdated information
@@ -1091,6 +1098,9 @@ def main():
 if __name__ == '__main__':
     main()
 EOF
+else
+    print_status "Preserving existing validate-search-results.py hook"
+fi
 
 # Make Python hooks executable
 chmod +x .claude/hooks/validate-search-date.py
